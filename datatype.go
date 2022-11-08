@@ -14,6 +14,7 @@ type cell struct {
 // width
 type tissue struct {
 	width int
+	cells []*cell
 }
 
 type orderedPair struct {
