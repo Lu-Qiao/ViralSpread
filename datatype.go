@@ -14,12 +14,15 @@ type cell struct {
 // width
 type tissue struct {
 	width int
-	cells []*cell
+	board Board
 }
 
 type orderedPair struct {
 	x, y int
 }
+
+// Use Board to set the position of cells 
+type Board [][]*cell
 
 // orderedPair
 // int
