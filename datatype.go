@@ -4,7 +4,7 @@ package main
 // state string
 // conc of virus float
 // position orderedPair
-type cell struct {
+type Cell struct {
 	state     string
 	concVirus float64
 	position  orderedPair
@@ -12,7 +12,7 @@ type cell struct {
 
 // tissue
 // width
-type tissue struct {
+type Tissue struct {
 	width int
 	board Board
 }
@@ -21,8 +21,8 @@ type orderedPair struct {
 	x, y int
 }
 
-// Use Board to set the position of cells 
-type Board [][]*cell
+// Use Board to set the position of cells
+type Board [][]*Cell
 
 // orderedPair
 // int
