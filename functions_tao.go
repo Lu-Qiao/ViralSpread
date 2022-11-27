@@ -32,7 +32,7 @@ func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters, T
 	for i := range newBoard {
 		for j := range newBoard[i] {
 			if newBoard[i][j].state == "Infected" {
-				UpdateCell(i, j, newBoard, parameters.threshold)
+				UpdateCell(i, j, newBoard, timeSteps, parameters)
 			}
 		}
 	}
@@ -62,25 +62,23 @@ func CopyBoard(currentBoard Board) Board {
 // Input:
 // Output:
 func CalculateDeltaT(T, I int, timeSteps float64, parameters Parameters) int {
-	deltaT := 0
-
-	return deltaT
+	deltaT := (parameters.lambda - parameters.omega*float64(I)*float64(T) - parameters.dT) * timeSteps
+	return int(deltaT)
 }
 
 // CalculateDeltaI
 // Input:
 // Output:
 func CalculateDeltaI(T, I int, timeSteps float64, parameters Parameters) int {
-	deltaI := 0
-
-	return deltaI
+	deltaI := (parameters.omega*float64(I)*float64(T) - parameters.delta*float64(I)) * timeSteps
+	return int(deltaI)
 }
 
 // UpdateState
 // Input:
 func UpdateState(currentBoard Board, deltaT, deltaI int) {
-	UpdateTargetCells(currentBoard, deltaT)
 	UpdateInfectiousCells(currentBoard, deltaI)
+	UpdateTargetCells(currentBoard, deltaT)
 }
 
 // UpdateTargetCells
@@ -98,15 +96,18 @@ func UpdateInfectiousCells(currentBoard Board, deltaI int) {
 
 // UpdateCell
 // Input:
-func UpdateCell(i, j int, currentBoard Board, threshold float64) {
-	UpdateVirusConcentration(i, j, currentBoard)
-	if currentBoard[i][j].concVirus >= threshold {
+func UpdateCell(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) {
+	deltaR := UpdateVirusConcentration(i, j, currentBoard, timeSteps, parameters)
+	currentBoard[i][j].concVirus += deltaR
+	if currentBoard[i][j].concVirus >= parameters.threshold {
 		currentBoard[i][j].state = "Infectious"
 	}
 }
 
 // UpdateVirusConcentration
 // Input:
-func UpdateVirusConcentration(i, j int, currentBoard Board) {
-
+// Output:
+func UpdateVirusConcentration(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) float64 {
+	deltaR := currentBoard[i][j].concVirus * (parameters.alpha*(1-currentBoard[i][j].concVirus/parameters.rCap) - parameters.gamma - parameters.rho) * timeSteps
+	return deltaR
 }
