@@ -3,15 +3,15 @@ package main
 // SimulateViralSpread simulates the viral spread system over numGens generations starting
 // with initialBoard using a time step of timeStep seconds.
 // Input: a Board object initialBoard, a int of generations parameter numGens, a float64 time interval timeStep,
-// and threshold for infected cell switching to infectious cell
+// and parameters for cell and virus
 // Output: a slice of numGens + 1 total Board objects.
-func SimulateViralSpread(initialBoard Board, numGens int, timeSteps, threshold float64) []Board {
+func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, parameters Parameters) []Board {
 	timePoints := make([]Board, numGens+1)
 	timePoints[0] = initialBoard
 
 	// now range over the number of generations and update the Board each time
 	for i := 1; i <= numGens; i++ {
-		timePoints[i] = UpdateBoard(timePoints[i-1], timeSteps, threshold)
+		timePoints[i] = UpdateBoard(timePoints[i-1], timeSteps, parameters)
 	}
 
 	return timePoints
@@ -21,15 +21,15 @@ func SimulateViralSpread(initialBoard Board, numGens int, timeSteps, threshold f
 // UpdateBoard
 // Input:
 // Output:
-func UpdateBoard(currentBoard Board, timeSteps, threshold float64) Board {
+func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters) Board {
 	newBoard := CopyBoard(currentBoard)
 
-	UpdateState(newBoard)
+	UpdateState(newBoard, parameters)
 
 	for i := range newBoard {
 		for j := range newBoard[i] {
 			if newBoard[i][j].state == "Infected" {
-				UpdateCell(i, j, newBoard, threshold)
+				UpdateCell(i, j, newBoard, parameters.threshold)
 			}
 		}
 	}
@@ -57,8 +57,30 @@ func CopyBoard(currentBoard Board) Board {
 
 // UpdateState
 // Input:
-func UpdateState(currentBoard Board) {
+func UpdateState(currentBoard Board, parameters Parameters) {
+	deltaT := UpdateTargetCells(currentBoard, parameters)
+	deltaI := UpdateInfectiousCells(currentBoard, parameters)
 
+	_ = deltaT
+	_ = deltaI
+}
+
+// UpdateTargetCells
+// Input:
+// Output:
+func UpdateTargetCells(currentBoard Board, parameters Parameters) float64 {
+	deltaT := 0.0
+
+	return deltaT
+}
+
+// UpdateInfectiousCells
+// Input:
+// Output:
+func UpdateInfectiousCells(currentBoard Board, parameters Parameters) float64 {
+	deltaI := 0.0
+
+	return deltaI
 }
 
 // UpdateCell

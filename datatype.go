@@ -12,3 +12,11 @@ type Cell struct {
 
 // Board
 type Board [][]Cell
+
+// Parameters
+type Parameters struct {
+	// parameters for cells
+	lambda, omega, dT, delta, threshold float64
+	// parameters for virus
+	rCap, alpha, gamma, rho float64
+}
