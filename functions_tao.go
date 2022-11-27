@@ -76,4 +76,4 @@ func UpdateVirusConcentration(i, j int, currentBoard Board) {
 
 }
 
-//
+// UpdateVirusConcentration
