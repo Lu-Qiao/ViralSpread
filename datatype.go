@@ -11,7 +11,6 @@ type Cell struct {
 }
 
 // tissue
-// width
 type Tissue [][]Cell
 
 type orderedPair struct {
