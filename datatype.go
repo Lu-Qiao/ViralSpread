@@ -5,6 +5,8 @@ package main
 // conc of virus float
 // position orderedPair
 type Cell struct {
+	// states: "Infectious", "Infected",
+	// "dead", and "Uninfected"
 	state     string
 	concVirus float64
 	position  orderedPair
