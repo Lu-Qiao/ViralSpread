@@ -1,5 +1,11 @@
 package main
 
+import (
+	"math"
+	"math/rand"
+	"time"
+)
+
 // SimulateViralSpread simulates the viral spread system over numGens generations starting
 // with initialBoard using a time step of timeStep seconds.
 // Input: a Board object initialBoard, a int of generations parameter numGens, a float64 time interval timeStep,
@@ -81,17 +87,67 @@ func UpdateState(currentBoard Board, deltaT, deltaI int) {
 	UpdateTargetCells(currentBoard, deltaT)
 }
 
+// UpdateInfectiousCells
+// Input:
+func UpdateInfectiousCells(currentBoard Board, deltaI int) {
+	listInfectiousCells := make([]OrderedPair, 0)
+	for i := range currentBoard {
+		for j := range currentBoard[i] {
+			if currentBoard[i][j].state == "Infectious" {
+				var newOrderedPair OrderedPair
+				newOrderedPair.x = i
+				newOrderedPair.y = j
+				listInfectiousCells = append(listInfectiousCells, newOrderedPair)
+			}
+		}
+	}
+
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i > deltaI; i-- {
+		randIndex := rand.Intn(len(listInfectiousCells))
+		currentBoard[listInfectiousCells[randIndex].x][listInfectiousCells[randIndex].y].state = "Dead"
+	}
+}
+
 // UpdateTargetCells
 // Input:
 func UpdateTargetCells(currentBoard Board, deltaT int) {
+	listInfectiousCells := make([]OrderedPair, 0)
+	for i := range currentBoard {
+		for j := range currentBoard[i] {
+			if currentBoard[i][j].state == "Infectious" {
+				var newOrderedPair OrderedPair
+				newOrderedPair.x = i
+				newOrderedPair.y = j
+				listInfectiousCells = append(listInfectiousCells, newOrderedPair)
+			}
+		}
+	}
+	rand.Seed(time.Now().UnixNano())
+	for i := 0; i < deltaT; i++ {
+		randIndex := rand.Intn(len(listInfectiousCells))
+		var randDirection OrderedPair
+		randDirection.x = int(math.Pow(-1, float64(rand.Intn(100))))
+		randDirection.y = int(math.Pow(-1, float64(rand.Intn(100))))
 
-}
+		xIndex := listInfectiousCells[randIndex].x + randDirection.x
+		yIndex := listInfectiousCells[randIndex].y + randDirection.y
 
-// UpdateInfectiousCells
-// Input:
-// Output:
-func UpdateInfectiousCells(currentBoard Board, deltaI int) {
-
+		if xIndex < 0 {
+			xIndex += 2
+		} else if xIndex >= len(currentBoard) {
+			xIndex -= 2
+		}
+		if yIndex < 0 {
+			yIndex += 2
+		} else if yIndex >= len(currentBoard[i]) {
+			yIndex -= 2
+		}
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		if currentBoard[xIndex][yIndex].state == "Uninfected" {
+			currentBoard[xIndex][yIndex].state = "Infected"
+		}
+	}
 }
 
 // UpdateCell
@@ -108,6 +164,5 @@ func UpdateCell(i, j int, currentBoard Board, timeSteps float64, parameters Para
 // Input:
 // Output:
 func UpdateVirusConcentration(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) float64 {
-	deltaR := currentBoard[i][j].concVirus * (parameters.alpha*(1-currentBoard[i][j].concVirus/parameters.rCap) - parameters.gamma - parameters.rho) * timeSteps
-	return deltaR
+	return currentBoard[i][j].concVirus * (parameters.alpha*(1-currentBoard[i][j].concVirus/parameters.rCap) - parameters.gamma - parameters.rho) * timeSteps
 }

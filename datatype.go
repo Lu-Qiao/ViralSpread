@@ -20,3 +20,7 @@ type Parameters struct {
 	// parameters for virus
 	rCap, alpha, gamma, rho float64
 }
+
+type OrderedPair struct {
+	x, y int
+}
