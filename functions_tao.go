@@ -75,5 +75,3 @@ func UpdateCell(i, j int, currentBoard Board, threshold float64) {
 func UpdateVirusConcentration(i, j int, currentBoard Board) {
 
 }
-
-// UpdateVirusConcentration
