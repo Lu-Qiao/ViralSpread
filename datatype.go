@@ -12,10 +12,7 @@ type Cell struct {
 
 // tissue
 // width
-type Tissue struct {
-	width int
-	board Board
-}
+type Tissue [][]Cell
 
 type orderedPair struct {
 	x, y int
