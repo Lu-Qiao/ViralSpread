@@ -32,14 +32,14 @@ func DrawToCanvas(currentTissue Tissue, canvasWidth int) image.Image {
 	for i := 0; i < canvasWidth; i++ {
 		for j := 0; j < canvasWidth; j++ {
 			switch {
-			case currentTissue[i][j].state == "Target":
-				img.Set(i, j, color.RGBA{0, 0, 0, 0xff})
 			case currentTissue[i][j].state == "Infectious":
-				img.Set(i, j, color.RGBA{255, 0, 0, 0xff})
+				c.img.Set(i, j, color.RGBA{255, 0, 0, 0xff})
+			case currentTissue[i][j].state == "Infected":
+				c.img.Set(i, j, color.RGBA{215, 222, 33, 0xff})
 			case currentTissue[i][j].state == "Dead":
-				img.Set(i, j, color.RGBA{170, 170, 170, 0xff})
-			case currentTissue[i][j].state == "Normal":
-				img.Set(i, j, color.RGBA{255, 255, 255, 0xff})
+				c.img.Set(i, j, color.RGBA{0, 0, 0, 0xff})
+			case currentTissue[i][j].state == "Uninfected":
+				c.img.Set(i, j, color.RGBA{255, 255, 255, 0xff})
 			default:
 				// Use zero value.
 			}
