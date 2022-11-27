@@ -25,7 +25,7 @@ func UpdateBoard(currentBoard Board, timeSteps float64) Board {
 
 	for i := range newBoard {
 		for j := range newBoard[i] {
-			_ = j
+			UpdateCell(i, j, newBoard)
 		}
 
 	}
@@ -50,4 +50,10 @@ func CopyBoard(currentBoard Board) Board {
 		}
 	}
 	return newBoard
+}
+
+// UpdateCell
+// Input:
+func UpdateCell(i, j int, currentBoard Board) {
+
 }
