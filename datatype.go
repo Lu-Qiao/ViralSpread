@@ -11,4 +11,4 @@ type Cell struct {
 }
 
 // Board
-type Board [][]*Cell
+type Board [][]Cell
