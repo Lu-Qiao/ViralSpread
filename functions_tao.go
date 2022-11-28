@@ -186,7 +186,8 @@ func RandomInfectCell(currentBoard Board, infectCell OrderedPair, cellAround []O
 	}
 	if currentBoard[beInfectedCell.x][beInfectedCell.y].state == "Uninfected" {
 		currentBoard[beInfectedCell.x][beInfectedCell.y].state = "Infected"
-	} else if len(cellAround) == 1 {
+	} 
+	if len(cellAround) == 1 {
 		return currentBoard
 	} else {
 		if selectIndex == len(cellAround)-1 {
