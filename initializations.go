@@ -20,11 +20,10 @@ func InitializeTissue(width int) Board {
 // AssignStart
 // input
 // Output
-func AssignStart(initialTissue Board, initialPositions []OrderedPair, conc float64) Board {
-	for _, p := range initialPositions {
-		initialTissue[p.x][p.y].state = "Infectious"
-		initialTissue[p.x][p.y].concVirus = conc
-	}
+func AssignStart(initialTissue Board, initialPosition OrderedPair, conc float64) Board {
+	initialTissue[initialPosition.x][initialPosition.y].state = "Infectious"
+	initialTissue[initialPosition.x][initialPosition.y].concVirus = conc
+
 	return initialTissue
 }
 
