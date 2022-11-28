@@ -71,7 +71,9 @@ func CopyBoard(currentBoard Board) Board {
 // and a parameters object including several parameters that will be used in the calculation
 // Output: a int object for deltaT
 func CalculateDeltaT(T, I int, timeSteps float64, parameters Parameters) int {
-	deltaT := (parameters.lambda - parameters.omega*float64(I)*float64(T) - parameters.dT) * timeSteps
+	transmission := CalculateCellTransmission(T, I, parameters)
+
+	deltaT := (parameters.lambda - transmission - parameters.dT) * timeSteps
 	return int(deltaT)
 }
 
@@ -80,8 +82,23 @@ func CalculateDeltaT(T, I int, timeSteps float64, parameters Parameters) int {
 // and a parameters object including several parameters that will be used in the calculation
 // Output: a int object for deltaI
 func CalculateDeltaI(T, I int, timeSteps float64, parameters Parameters) int {
-	deltaI := (parameters.omega*float64(I)*float64(T) - parameters.delta*float64(I)) * timeSteps
+	transmission := CalculateCellTransmission(T, I, parameters)
+
+	deltaI := (transmission - parameters.delta*float64(I)) * timeSteps
 	return int(deltaI)
+}
+
+// CalculateCellTransmission (omega*T*I)
+// Input:
+// Output:
+func CalculateCellTransmission(T, I int, parameters Parameters) float64 {
+	transmission := 0.0
+	if parameters.treatment == "blockcell" || parameters.treatment == "blockvirus" {
+		transmission = (1 - parameters.epsilonCell) * parameters.omega * float64(I) * float64(T)
+	} else {
+		transmission = parameters.omega * float64(I) * float64(T)
+	}
+	return transmission
 }
 
 // UpdateState updates the state of infection cells and target cells
@@ -165,16 +182,29 @@ func UpdateTargetCells(currentBoard Board, deltaT int) {
 // UpdateCell
 // Input:
 func UpdateCell(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) {
-	deltaR := UpdateVirusConcentration(i, j, currentBoard, timeSteps, parameters)
+	deltaR := 0.0
+	if parameters.treatment == "blockvirus" || parameters.treatment == "blockboth" {
+		deltaR = UpdateVirusConcentrationNoTreatment(i, j, currentBoard, timeSteps, parameters)
+	} else {
+		deltaR = UpdateVirusConcentrationBlockVirus(i, j, currentBoard, timeSteps, parameters)
+	}
+
 	currentBoard[i][j].concVirus += deltaR
 	if currentBoard[i][j].concVirus >= parameters.threshold {
 		currentBoard[i][j].state = "Infectious"
 	}
 }
 
-// UpdateVirusConcentration
+// UpdateVirusConcentrationNoTreatment
 // Input:
 // Output:
-func UpdateVirusConcentration(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) float64 {
+func UpdateVirusConcentrationNoTreatment(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) float64 {
 	return currentBoard[i][j].concVirus * (parameters.alpha*(1-currentBoard[i][j].concVirus/parameters.rCap) - parameters.gamma - parameters.rho) * timeSteps
+}
+
+// UpdateVirusConcentrationBlockVirus
+// Input:
+// Output:
+func UpdateVirusConcentrationBlockVirus(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) float64 {
+	return currentBoard[i][j].concVirus * ((1-parameters.epsilonVirus)*parameters.alpha*(1-currentBoard[i][j].concVirus/parameters.rCap) - parameters.gamma - parameters.rho) * timeSteps
 }
