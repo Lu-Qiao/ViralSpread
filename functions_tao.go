@@ -133,10 +133,12 @@ func UpdateInfectiousCells(currentBoard Board, deltaI int) {
 	// Set seed
 	rand.Seed(time.Now().UnixNano())
 	// Randomly select deltaI times of infectious cells and change their state to dead
-	for i := 0; i > deltaI; i-- {
-		randIndex := rand.Intn(len(listInfectiousCells))
-		// Change state of cell from infectious to dead
-		currentBoard[listInfectiousCells[randIndex].x][listInfectiousCells[randIndex].y].state = "Dead"
+	if len(listInfectiousCells) != 0 {
+		for i := 0; i > deltaI; i-- {
+			randIndex := rand.Intn(len(listInfectiousCells))
+			// Change state of cell from infectious to dead
+			currentBoard[listInfectiousCells[randIndex].x][listInfectiousCells[randIndex].y].state = "Dead"
+		}
 	}
 }
 
