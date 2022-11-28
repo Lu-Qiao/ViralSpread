@@ -195,8 +195,7 @@ func RandomInfectCell(currentBoard Board, infectCell OrderedPair, cellAround []O
 			cellAround = cellAround[0:selectIndex]
 			currentBoard = RandomInfectCell(currentBoard, infectCell, cellAround)
 		} else {
-			cellAround = cellAround[0:selectIndex]
-			cellAround = append(cellAround, cellAround[selectIndex+1:]...)
+			cellAround = append(cellAround[:selectIndex], cellAround[selectIndex+1:]...)
 			currentBoard = RandomInfectCell(currentBoard, infectCell, cellAround)
 		}
 	}
