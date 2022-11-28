@@ -9,8 +9,7 @@ import (
 // Input
 // Output
 func InitializeTissue(width int) Board {
-	var initialTissue Board
-	initialTissue = make([][]Cell, width)
+	initialTissue := make([][]Cell, width)
 	for r := range initialTissue {
 		initialTissue[r] = make([]Cell, width)
 	}
