@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 )
@@ -128,6 +129,7 @@ func UpdateInfectiousCells(currentBoard Board, deltaI int) {
 			}
 		}
 	}
+
 	// Set seed
 	rand.Seed(time.Now().UnixNano())
 	// Randomly select deltaI times of infectious cells and change their state to dead
@@ -216,7 +218,7 @@ func UpdateTargetCells2(currentBoard Board, deltaT int) {
 			}
 		}
 	}
-
+	fmt.Println(len(listInfectiousCells))
 	// Randomly select deltaT times of infectious cells
 	// and randomly choose a cell that will be affected by this infectious cells
 	for i := 0; i < deltaT; i++ {
