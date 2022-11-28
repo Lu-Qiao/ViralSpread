@@ -25,8 +25,9 @@ func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, par
 }
 
 // UpdateBoard updates current board with new deltaT and new daltaI
-// Input: a board object currentBoard, a float64 for timeSteps, 
-// Output:
+// Input: a board object currentBoard, a float64 for timeSteps, a parameters including different necessary parameters for cells and virus,
+// two int for T and I which are target cells and infected cells
+// Output: a borad object which is an updated board from current board
 func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters, T, I int) Board {
 	newBoard := CopyBoard(currentBoard)
 
@@ -45,9 +46,9 @@ func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters, T
 	return newBoard
 }
 
-// CopyBoard
-// Input:
-// Output:
+// CopyBoard is to do deep copy for current board to make sure each field would be copied
+// Input: a board object for currentBoard
+// Output: a copy of currentBoard
 func CopyBoard(currentBoard Board) Board {
 	// initialize an empty board according to the input board
 	newBoard := make([][]Cell, len(currentBoard))
@@ -64,24 +65,26 @@ func CopyBoard(currentBoard Board) Board {
 	return newBoard
 }
 
-// CalculateDeltaT
-// Input:
-// Output:
+// CalculateDeltaT is to calculate deltaT for untreated cell to cell model
+// Input: two int for target cells and infected cells, float64 for timeSteps
+// and a parameters object including several parameters that will be used in the calculation
+// Output: a int object for deltaT
 func CalculateDeltaT(T, I int, timeSteps float64, parameters Parameters) int {
 	deltaT := (parameters.lambda - parameters.omega*float64(I)*float64(T) - parameters.dT) * timeSteps
 	return int(deltaT)
 }
 
-// CalculateDeltaI
-// Input:
-// Output:
+// CalculateDeltaI is to calculate deltaI for untreated cell to cell model
+// Input: two int for target cells and infected cells, float64 for timeSteps
+// and a parameters object including several parameters that will be used in the calculation
+// Output: a int object for deltaI
 func CalculateDeltaI(T, I int, timeSteps float64, parameters Parameters) int {
 	deltaI := (parameters.omega*float64(I)*float64(T) - parameters.delta*float64(I)) * timeSteps
 	return int(deltaI)
 }
 
-// UpdateState
-// Input:
+// UpdateState updates the state of infection cells and target cells
+// Input: a board object for currentBoard, two int objects for deltaT and deltaI which are generated from CalculateDeltaI and CalculateDeltaT
 func UpdateState(currentBoard Board, deltaT, deltaI int) {
 	UpdateInfectiousCells(currentBoard, deltaI)
 	UpdateTargetCells(currentBoard, deltaT)
