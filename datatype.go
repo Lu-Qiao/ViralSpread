@@ -19,6 +19,9 @@ type Parameters struct {
 	lambda, omega, dT, delta, threshold float64
 	// parameters for virus
 	rCap, alpha, gamma, rho float64
+	// parameters for treatments
+	treatment                 string
+	epsilonCell, epsilonVirus float64
 }
 
 type OrderedPair struct {
