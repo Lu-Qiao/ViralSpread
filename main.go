@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"gifhelper"
 	"os"
 	"strconv"
 )
@@ -119,6 +120,12 @@ func main() {
 		panic(err18)
 	}
 
+	// os.Args[19] takes imageFrequency argument
+	imageFrequency, err19 := strconv.Atoi(os.Args[19])
+	if err19 != nil {
+		panic(err19)
+	}
+
 	// Copy all parameters from inputs
 	var parameters Parameters
 	// parameters for cells
@@ -137,12 +144,37 @@ func main() {
 	parameters.epsilonCell = epsilonCell
 	parameters.epsilonVirus = epsilonVirus
 
+	fmt.Println("Command line arguments read successfully.")
+
 	Tissue := InitializeTissue(width)
 	if mode == "random" {
 		RandomStart(Tissue, numInfectious, threshold)
-	} else if mode == "Assign" {
+	} else if mode == "assign" {
 		AssignStart(Tissue, pos, threshold)
 	}
 
-	fmt.Println("Command line arguments read successfully.")
+	fmt.Println("Simulating system.")
+
+	timePoints := SimulateViralSpread(Tissue, numGens, timeSteps, parameters, 0, numInfectious)
+
+	fmt.Println("Viral Spread has been simulated!")
+	fmt.Println("Ready to draw images.")
+
+	images := AnimateSystem(timePoints, width, imageFrequency)
+
+	fmt.Println("Images drawn!")
+
+	fmt.Println("Making GIF...")
+
+	var input string
+
+	for i := range os.Args {
+		input += os.Args[i] + "_"
+	}
+
+	gifhelper.ImagesToGIF(images, input)
+
+	fmt.Println("Animated GIF produced!")
+
+	fmt.Println("Exiting normally.")
 }
