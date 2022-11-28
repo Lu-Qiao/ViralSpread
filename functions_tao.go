@@ -222,13 +222,16 @@ func UpdateTargetCells2(currentBoard Board, deltaT int) {
 	fmt.Println(len(listInfectiousCells))
 	// Randomly select deltaT times of infectious cells
 	// and randomly choose a cell that will be affected by this infectious cells
-	for i := 0; i < deltaT; i++ {
-		var infectiousCell, up, down, left, right OrderedPair
-		randIndex := rand.Intn(len(listInfectiousCells))
-		infectiousCell = listInfectiousCells[randIndex]
-		up.x, down.x, left.x, right.x = infectiousCell.x-1, infectiousCell.x+1, infectiousCell.x, infectiousCell.x
-		up.y, down.y, left.y, right.y = infectiousCell.y, infectiousCell.y, infectiousCell.y-1, infectiousCell.y+1
-		cellAround := []OrderedPair{up, down, left, right}
-		currentBoard = RandomInfectCell(currentBoard, infectiousCell, cellAround)
+	if len(listInfectiousCells) != 0 {
+		for i := 0; i < deltaT; i++ {
+			var infectiousCell, up, down, left, right OrderedPair
+			randIndex := rand.Intn(len(listInfectiousCells))
+			infectiousCell = listInfectiousCells[randIndex]
+			up.x, down.x, left.x, right.x = infectiousCell.x-1, infectiousCell.x+1, infectiousCell.x, infectiousCell.x
+			up.y, down.y, left.y, right.y = infectiousCell.y, infectiousCell.y, infectiousCell.y-1, infectiousCell.y+1
+			cellAround := []OrderedPair{up, down, left, right}
+			currentBoard = RandomInfectCell(currentBoard, infectiousCell, cellAround)
+		}
 	}
+	
 }
