@@ -13,6 +13,11 @@ func InitializeTissue(width int) Board {
 	for r := range initialTissue {
 		initialTissue[r] = make([]Cell, width)
 	}
+	for row := range initialTissue {
+		for col := range initialTissue[0] {
+			initialTissue[row][col].state = "Uninfected"
+		}
+	}
 	return initialTissue
 }
 

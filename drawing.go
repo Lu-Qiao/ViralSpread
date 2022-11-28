@@ -3,6 +3,9 @@ package main
 import (
 	"image"
 	"image/color"
+	"image/png"
+	"log"
+	"os"
 )
 
 // AnimateSystem takes a slice of Board objects along with a width
@@ -44,6 +47,22 @@ func DrawToImage(currentBoard Board, width int) image.Image {
 				// Use zero value.
 			}
 		}
+	}
+
+	// from image package documentation
+	// Create a png file
+	f, err := os.Create("initial.png")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := png.Encode(f, img); err != nil {
+		f.Close()
+		log.Fatal(err)
+	}
+
+	if err := f.Close(); err != nil {
+		log.Fatal(err)
 	}
 
 	// we want to return an image!

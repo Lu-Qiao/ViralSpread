@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"time"
 )
@@ -147,9 +146,9 @@ func UpdateInfectiousCells(currentBoard Board, deltaI int) {
 func UpdateCell(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) {
 	deltaR := 0.0
 	if parameters.treatment == "blockvirus" || parameters.treatment == "blockboth" {
-		deltaR = UpdateVirusConcentrationNoTreatment(i, j, currentBoard, timeSteps, parameters)
-	} else {
 		deltaR = UpdateVirusConcentrationBlockVirus(i, j, currentBoard, timeSteps, parameters)
+	} else {
+		deltaR = UpdateVirusConcentrationNoTreatment(i, j, currentBoard, timeSteps, parameters)
 	}
 
 	currentBoard[i][j].concVirus += deltaR
@@ -221,7 +220,6 @@ func UpdateTargetCells2(currentBoard Board, deltaT int) {
 			}
 		}
 	}
-	fmt.Println(len(listInfectiousCells))
 	// Randomly select deltaT times of infectious cells
 	// and randomly choose a cell that will be affected by this infectious cells
 	if len(listInfectiousCells) != 0 {

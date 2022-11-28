@@ -131,7 +131,7 @@ func main() {
 	mode := "random"
 	numInfectious := 1000
 	initialPosition := 500
-	numGens := 10000
+	numGens := 1000
 	timeSteps := 100.0
 	lambda := 100.0
 	omega := 0.001
@@ -180,6 +180,7 @@ func main() {
 		AssignStart(Tissue, pos, threshold)
 	}
 
+	DrawToImage(Tissue, width)
 	fmt.Println("Simulating system.")
 
 	timePoints := SimulateViralSpread(Tissue, numGens, timeSteps, parameters, 0, numInfectious)
