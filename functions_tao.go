@@ -29,11 +29,12 @@ func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, par
 // two int for T and I which are target cells and infected cells
 // Output: a borad object which is an updated board from current board
 func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters, T, I int) Board {
+	// Copy Board and store it in newBoard
 	newBoard := CopyBoard(currentBoard)
-
+	// Calculate deltaT and deltaI
 	deltaT := CalculateDeltaT(T, I, timeSteps, parameters)
 	deltaI := CalculateDeltaI(T, I, timeSteps, parameters)
-
+	// Update the states of infectious cells and target cells
 	UpdateState(newBoard, deltaT, deltaI)
 
 	for i := range newBoard {
@@ -86,28 +87,36 @@ func CalculateDeltaI(T, I int, timeSteps float64, parameters Parameters) int {
 // UpdateState updates the state of infection cells and target cells
 // Input: a board object for currentBoard, two int objects for deltaT and deltaI which are generated from CalculateDeltaI and CalculateDeltaT
 func UpdateState(currentBoard Board, deltaT, deltaI int) {
+	// Update the state of infectious cells at currentBoard
 	UpdateInfectiousCells(currentBoard, deltaI)
+	// Update the state of target cells at currentBoard
 	UpdateTargetCells(currentBoard, deltaT)
 }
 
-// UpdateInfectiousCells
-// Input:
+// UpdateInfectiousCells collects all the infectious cells and then randomly selects the number of absolute deltaI
+// Input: a board object for current board, a int for deltaI which is calculated from CalculateDeltaI
 func UpdateInfectiousCells(currentBoard Board, deltaI int) {
+	// Create a list to store the index of infectious cells
 	listInfectiousCells := make([]OrderedPair, 0)
+	// Loop through currentBoard to find infectious cells
 	for i := range currentBoard {
 		for j := range currentBoard[i] {
 			if currentBoard[i][j].state == "Infectious" {
+				// If cell is infection
+				// Set the index of infectious cells to OrderedPair
 				var newOrderedPair OrderedPair
 				newOrderedPair.x = i
 				newOrderedPair.y = j
+				// Store OrderedPair in the list
 				listInfectiousCells = append(listInfectiousCells, newOrderedPair)
 			}
 		}
 	}
-
+	// Randomly select deltaI times of infectious cells and change their state to dead
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i > deltaI; i-- {
 		randIndex := rand.Intn(len(listInfectiousCells))
+		// Change state of cell from infectious to dead
 		currentBoard[listInfectiousCells[randIndex].x][listInfectiousCells[randIndex].y].state = "Dead"
 	}
 }
