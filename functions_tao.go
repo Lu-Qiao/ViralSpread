@@ -129,8 +129,9 @@ func UpdateInfectiousCells(currentBoard Board, deltaI int) {
 			}
 		}
 	}
-	// Randomly select deltaI times of infectious cells and change their state to dead
+	// Set seed
 	rand.Seed(time.Now().UnixNano())
+	// Randomly select deltaI times of infectious cells and change their state to dead
 	for i := 0; i > deltaI; i-- {
 		randIndex := rand.Intn(len(listInfectiousCells))
 		// Change state of cell from infectious to dead
@@ -138,30 +139,40 @@ func UpdateInfectiousCells(currentBoard Board, deltaI int) {
 	}
 }
 
-// UpdateTargetCells
-// Input:
+// UpdateTargetCells is to update the cells that will be susceptible to infection
+// Input: a board object of currentBoard, a int for deltaT which is calculated from CalculateDeltaT
 func UpdateTargetCells(currentBoard Board, deltaT int) {
+	// Create a list to store the index of infectious cells
 	listInfectiousCells := make([]OrderedPair, 0)
+	// Loop through currentBoard to find infectious cells
 	for i := range currentBoard {
 		for j := range currentBoard[i] {
 			if currentBoard[i][j].state == "Infectious" {
+				// If cell is infection
+				// Set the index of infectious cells to OrderedPair
 				var newOrderedPair OrderedPair
 				newOrderedPair.x = i
 				newOrderedPair.y = j
+				// Store OrderedPair in the list
 				listInfectiousCells = append(listInfectiousCells, newOrderedPair)
 			}
 		}
 	}
+
+	// Randomly select deltaT times of infectious cells
+	// and randomly choose a cell that will be affected by this infectious cells
 	rand.Seed(time.Now().UnixNano())
 	for i := 0; i < deltaT; i++ {
+		// Choose one infectious cells
 		randIndex := rand.Intn(len(listInfectiousCells))
+		// Randomly select a cell around this infectious cells
+		// And the cell will be affected by infectious cells
 		var randDirection OrderedPair
 		randDirection.x = int(math.Pow(-1, float64(rand.Intn(100))))
 		randDirection.y = int(math.Pow(-1, float64(rand.Intn(100))))
-
 		xIndex := listInfectiousCells[randIndex].x + randDirection.x
 		yIndex := listInfectiousCells[randIndex].y + randDirection.y
-
+		// Avoid index out of range
 		if xIndex < 0 {
 			xIndex += 2
 		} else if xIndex >= len(currentBoard) {
@@ -178,6 +189,7 @@ func UpdateTargetCells(currentBoard Board, deltaT int) {
 		}
 	}
 }
+
 
 // UpdateCell
 // Input:
