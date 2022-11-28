@@ -84,6 +84,45 @@ func main() {
 	}
 	_ = threshold
 
+	// os.Args[12] takes rCap argument
+	rCap, err12 := strconv.ParseFloat(os.Args[12], 64)
+	if err12 != nil {
+		panic(err12)
+	}
+	_ = rCap
+
+	// os.Args[13] takes alpha argument
+	alpha, err13 := strconv.ParseFloat(os.Args[13], 64)
+	if err13 != nil {
+		panic(err13)
+	}
+	_ = alpha
+
+	// os.Args[14] takes gamma argument
+	gamma, err14 := strconv.ParseFloat(os.Args[14], 64)
+	if err14 != nil {
+		panic(err14)
+	}
+	_ = gamma
+
+	// os.Args[15] takes rho argument
+	rho, err15 := strconv.ParseFloat(os.Args[15], 64)
+	if err15 != nil {
+		panic(err15)
+	}
+	_ = rho
+
+	var parameters Parameters
+	parameters.lambda = lambda
+	parameters.omega = omega
+	parameters.dT = dT
+	parameters.delta = delta
+	parameters.threshold = threshold
+	parameters.rCap = rCap
+	parameters.alpha = alpha
+	parameters.gamma = gamma
+	parameters.rho = rho
+
 	Tissue := InitializeTissue(width)
 	if mode == "random" {
 		Tissue = RandomStart(Tissue, numInfectious, threshold)
