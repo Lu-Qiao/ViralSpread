@@ -24,8 +24,8 @@ func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, par
 
 }
 
-// UpdateBoard
-// Input:
+// UpdateBoard updates current board with new deltaT and new daltaI
+// Input: a board object currentBoard, a float64 for timeSteps, 
 // Output:
 func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters, T, I int) Board {
 	newBoard := CopyBoard(currentBoard)
