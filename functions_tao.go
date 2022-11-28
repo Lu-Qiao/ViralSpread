@@ -1,7 +1,6 @@
 package main
 
 import (
-	"math"
 	"math/rand"
 	"time"
 )
@@ -107,7 +106,7 @@ func UpdateState(currentBoard Board, deltaT, deltaI int) {
 	// Update the state of infectious cells at currentBoard
 	UpdateInfectiousCells(currentBoard, deltaI)
 	// Update the state of target cells at currentBoard
-	UpdateTargetCells(currentBoard, deltaT)
+	UpdateTargetCells2(currentBoard, deltaT)
 }
 
 // UpdateInfectiousCells collects all the infectious cells and then randomly selects the number of absolute deltaI
@@ -139,58 +138,6 @@ func UpdateInfectiousCells(currentBoard Board, deltaI int) {
 	}
 }
 
-// UpdateTargetCells is to update the cells that will be susceptible to infection
-// Input: a board object of currentBoard, a int for deltaT which is calculated from CalculateDeltaT
-func UpdateTargetCells(currentBoard Board, deltaT int) {
-	// Create a list to store the index of infectious cells
-	listInfectiousCells := make([]OrderedPair, 0)
-	// Loop through currentBoard to find infectious cells
-	for i := range currentBoard {
-		for j := range currentBoard[i] {
-			if currentBoard[i][j].state == "Infectious" {
-				// If cell is infection
-				// Set the index of infectious cells to OrderedPair
-				var newOrderedPair OrderedPair
-				newOrderedPair.x = i
-				newOrderedPair.y = j
-				// Store OrderedPair in the list
-				listInfectiousCells = append(listInfectiousCells, newOrderedPair)
-			}
-		}
-	}
-
-	// Randomly select deltaT times of infectious cells
-	// and randomly choose a cell that will be affected by this infectious cells
-	rand.Seed(time.Now().UnixNano())
-	for i := 0; i < deltaT; i++ {
-		// Choose one infectious cells
-		randIndex := rand.Intn(len(listInfectiousCells))
-		// Randomly select a cell around this infectious cells
-		// And the cell will be affected by infectious cells
-		var randDirection OrderedPair
-		randDirection.x = int(math.Pow(-1, float64(rand.Intn(100))))
-		randDirection.y = int(math.Pow(-1, float64(rand.Intn(100))))
-		xIndex := listInfectiousCells[randIndex].x + randDirection.x
-		yIndex := listInfectiousCells[randIndex].y + randDirection.y
-		// Avoid index out of range
-		if xIndex < 0 {
-			xIndex += 2
-		} else if xIndex >= len(currentBoard) {
-			xIndex -= 2
-		}
-		if yIndex < 0 {
-			yIndex += 2
-		} else if yIndex >= len(currentBoard[i]) {
-			yIndex -= 2
-		}
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		if currentBoard[xIndex][yIndex].state == "Uninfected" {
-			currentBoard[xIndex][yIndex].state = "Infected"
-		}
-	}
-}
-
-
 // UpdateCell
 // Input:
 func UpdateCell(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) {
@@ -219,4 +166,66 @@ func UpdateVirusConcentrationNoTreatment(i, j int, currentBoard Board, timeSteps
 // Output:
 func UpdateVirusConcentrationBlockVirus(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) float64 {
 	return currentBoard[i][j].concVirus * ((1-parameters.epsilonVirus)*parameters.alpha*(1-currentBoard[i][j].concVirus/parameters.rCap) - parameters.gamma - parameters.rho) * timeSteps
+}
+
+func RandomInfectCell(currentBoard Board, infectCell OrderedPair, cellAround []OrderedPair) Board {
+	rand.Seed(time.Now().UnixNano())
+	selectIndex := rand.Intn(len(cellAround))
+	beInfectedCell := cellAround[selectIndex]
+	if beInfectedCell.x < 0 {
+		beInfectedCell.x += 2
+	} else if beInfectedCell.x >= len(currentBoard) {
+		beInfectedCell.x -= 2
+	}
+	if beInfectedCell.y < 0 {
+		beInfectedCell.y += 2
+	} else if beInfectedCell.y >= len(currentBoard[0]) {
+		beInfectedCell.y -= 2
+	}
+	if currentBoard[beInfectedCell.x][beInfectedCell.y].state == "Uninfected" {
+		currentBoard[beInfectedCell.x][beInfectedCell.y].state = "Infected"
+	} else if len(cellAround) == 1 {
+		return currentBoard
+	} else {
+		if selectIndex == len(cellAround)-1 {
+			cellAround = cellAround[0:selectIndex]
+			currentBoard = RandomInfectCell(currentBoard, infectCell, cellAround)
+		} else {
+			cellAround = cellAround[0:selectIndex]
+			cellAround = append(cellAround, cellAround[selectIndex+1:]...)
+			currentBoard = RandomInfectCell(currentBoard, infectCell, cellAround)
+		}
+	}
+	return currentBoard
+}
+
+func UpdateTargetCells2(currentBoard Board, deltaT int) {
+	// Create a list to store the index of infectious cells
+	listInfectiousCells := make([]OrderedPair, 0)
+	// Loop through currentBoard to find infectious cells
+	for i := range currentBoard {
+		for j := range currentBoard[i] {
+			if currentBoard[i][j].state == "Infectious" {
+				// If cell is infection
+				// Set the index of infectious cells to OrderedPair
+				var newOrderedPair OrderedPair
+				newOrderedPair.x = i
+				newOrderedPair.y = j
+				// Store OrderedPair in the list
+				listInfectiousCells = append(listInfectiousCells, newOrderedPair)
+			}
+		}
+	}
+
+	// Randomly select deltaT times of infectious cells
+	// and randomly choose a cell that will be affected by this infectious cells
+	for i := 0; i < deltaT; i++ {
+		var infectiousCell, up, down, left, right OrderedPair
+		randIndex := rand.Intn(len(listInfectiousCells))
+		infectiousCell = listInfectiousCells[randIndex]
+		up.x, down.x, left.x, right.x = infectiousCell.x-1, infectiousCell.x+1, infectiousCell.x, infectiousCell.x
+		up.y, down.y, left.y, right.y = infectiousCell.y, infectiousCell.y, infectiousCell.y-1, infectiousCell.y+1
+		cellAround := []OrderedPair{up, down, left, right}
+		currentBoard = RandomInfectCell(currentBoard, infectiousCell, cellAround)
+	}
 }
