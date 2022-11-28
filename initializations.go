@@ -19,18 +19,15 @@ func InitializeTissue(width int) Board {
 
 // AssignStart
 // input
-// Output
-func AssignStart(initialTissue Board, initialPosition OrderedPair, conc float64) Board {
+func AssignStart(initialTissue Board, initialPosition OrderedPair, conc float64) {
 	initialTissue[initialPosition.x][initialPosition.y].state = "Infectious"
 	initialTissue[initialPosition.x][initialPosition.y].concVirus = conc
-
-	return initialTissue
 }
 
 // RandomStart
 // Input
 // Output
-func RandomStart(initialTissue Board, numPositions int, conc float64) Board {
+func RandomStart(initialTissue Board, numPositions int, conc float64) {
 	for i := 0; i < numPositions; i++ {
 		time.Sleep(time.Millisecond)
 		rand.Seed(time.Now().UnixNano())
@@ -42,5 +39,4 @@ func RandomStart(initialTissue Board, numPositions int, conc float64) Board {
 		initialTissue[row][col].state = "Infectious"
 		initialTissue[row][col].concVirus = conc
 	}
-	return initialTissue
 }

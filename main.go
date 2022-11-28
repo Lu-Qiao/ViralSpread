@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 )
@@ -138,8 +139,10 @@ func main() {
 
 	Tissue := InitializeTissue(width)
 	if mode == "random" {
-		Tissue = RandomStart(Tissue, numInfectious, threshold)
+		RandomStart(Tissue, numInfectious, threshold)
 	} else if mode == "Assign" {
-		Tissue = AssignStart(Tissue, pos, threshold)
+		AssignStart(Tissue, pos, threshold)
 	}
+
+	fmt.Println("Command line arguments read successfully.")
 }
