@@ -49,4 +49,18 @@ func main() {
 		panic(err6)
 	}
 	_ = dT
+
+	// os.Args[7] takes delta argument
+	delta, err7 := strconv.ParseFloat(os.Args[7], 64)
+	if err7 != nil {
+		panic(err7)
+	}
+	_ = delta
+
+	// os.Args[8] takes threshold argument
+	threshold, err8 := strconv.ParseFloat(os.Args[8], 64)
+	if err8 != nil {
+		panic(err8)
+	}
+	_ = threshold
 }
