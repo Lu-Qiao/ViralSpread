@@ -129,15 +129,15 @@ func main() {
 	// temp: test inputs
 	width := 1000
 	mode := "assign"
-	numInfectious := 1
+	numInfectious := 5
 	initialPosition := 500
 	numGens := 10000
 	timeSteps := 10.0
 	lambda := 1.0
 	omega := 1.0
-	dT := 1.0
-	delta := 1.0
-	threshold := 100000.0
+	dT := 0.00001
+	delta := 0.001
+	threshold := 50000.0
 	rCap := 1000000.0
 	alpha := 1.0
 	gamma := 1.0
