@@ -128,11 +128,11 @@ func main() {
 	// ************************************************************************************************
 	// temp: test inputs
 	width := 1000
-	mode := "assign"
-	numInfectious := 5
+	mode := "random"
+	numInfectious := 1000
 	initialPosition := 500
 	numGens := 10000
-	timeSteps := 10.0
+	timeSteps := 100.0
 	lambda := 100.0
 	omega := 0.001
 	dT := 0.1
@@ -141,7 +141,7 @@ func main() {
 	rCap := 1000000.0
 	alpha := 1.0
 	gamma := 1.0
-	rho := 1500.0
+	rho := 100.0
 	treatment := "no"
 	epsilonCell := 0.0
 	epsilonVirus := 0.0
