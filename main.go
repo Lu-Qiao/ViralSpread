@@ -128,9 +128,9 @@ func main() {
 	// ************************************************************************************************
 	// temp: test inputs
 	width := 100
-	mode := "random"
+	mode := "assign"
 	numInfectious := 100
-	initialPosition := 500
+	initialPosition := 50
 	numGens := 2000
 	timeSteps := 1.0
 	lambda := 100.0
@@ -142,9 +142,9 @@ func main() {
 	alpha := 80.0
 	gamma := 10.0
 	rho := 10.0
-	treatment := "no"
-	epsilonCell := 0.0
-	epsilonVirus := 0.0
+	treatment := "blockvirus"
+	epsilonCell := 1.0
+	epsilonVirus := 0.25
 	imageFrequency := 1
 
 	var pos OrderedPair
