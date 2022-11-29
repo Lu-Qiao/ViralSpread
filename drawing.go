@@ -32,12 +32,16 @@ func DrawToImage(currentBoard Board, width int) image.Image {
 	for i := 0; i < width; i++ {
 		for j := 0; j < width; j++ {
 			switch {
+			// infectious = red
 			case currentBoard[i][j].state == "Infectious":
 				img.Set(i, j, color.RGBA{255, 0, 0, 0xff})
+			// infected = green
 			case currentBoard[i][j].state == "Infected":
 				img.Set(i, j, color.RGBA{215, 222, 33, 0xff})
+			// dead = black
 			case currentBoard[i][j].state == "Dead":
 				img.Set(i, j, color.RGBA{0, 0, 0, 0xff})
+			// uninfected = white
 			case currentBoard[i][j].state == "Uninfected":
 				img.Set(i, j, color.RGBA{255, 255, 255, 0xff})
 			default:
