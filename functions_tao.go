@@ -95,7 +95,7 @@ func CalculateDeltaI(T, I int, timeSteps float64, parameters Parameters) int {
 // Output:
 func CalculateCellTransmission(T, I int, parameters Parameters) float64 {
 	transmission := 0.0
-	if parameters.treatment == "blockcell" || parameters.treatment == "blockvirus" {
+	if parameters.treatment == "blockcell" || parameters.treatment == "blockboth" {
 		transmission = (1 - parameters.epsilonCell) * parameters.omega * float64(I) * float64(T)
 	} else {
 		transmission = parameters.omega * float64(I) * float64(T)
