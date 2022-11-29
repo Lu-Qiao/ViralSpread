@@ -4,8 +4,7 @@ package main
 // state string
 // conc of virus float
 type Cell struct {
-	// states: "Infectious", "Infected",
-	// "dead", and "Uninfected"
+	// states: "Infectious", "Infected", "dead", and "Uninfected"
 	state     string
 	concVirus float64
 }
@@ -20,7 +19,7 @@ type Parameters struct {
 	// parameters for virus
 	rCap, alpha, gamma, rho float64
 	// parameters for treatments
-	treatment                 string
+	treatment string
 	epsilonCell, epsilonVirus float64
 }
 

@@ -5,10 +5,11 @@ import (
 	"time"
 )
 
-// SimulateViralSpread simulates the viral spread system over numGens generations starting
-// with initialBoard using a time step of timeStep seconds.
-// Input: a Board object initialBoard, a int of generations parameter numGens, a float64 time interval timeStep,
-// parameters for cell and virus, and initial number of target cells and infectious cells
+// SimulateViralSpread simulates the viral spread system over numGens generations
+// starting with initialBoard using a time step of timeStep seconds.
+// Input: a Board object initialBoard, a int of generations parameter numGens, a
+// float64 time interval timeStep,parameters for cell and virus, and initial
+// number of target cells and infectious cells
 // Output: a slice of numGens + 1 total Board objects.
 func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, parameters Parameters, initialT, initialI int) []Board {
 	timePoints := make([]Board, numGens+1)
@@ -24,8 +25,9 @@ func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, par
 }
 
 // UpdateBoard updates current board with new deltaT and new daltaI
-// Input: a board object currentBoard, a float64 for timeSteps, a parameters including different necessary parameters for cells and virus,
-// two int for T and I which are target cells and infected cells
+// Input: a board object currentBoard, a float64 for timeSteps, a parameters
+// including different necessary parameters for cells and virus, two int for T
+// and I which are target cells and infected cells
 // Output: a borad object which is an updated board from current board
 func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters, T, I int) Board {
 	// Copy Board and store it in newBoard
@@ -46,7 +48,8 @@ func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters, T
 	return newBoard
 }
 
-// CopyBoard is to do deep copy for current board to make sure each field would be copied
+// CopyBoard is to do deep copy for current board to make sure each field would
+// be copied
 // Input: a board object for currentBoard
 // Output: a copy of currentBoard
 func CopyBoard(currentBoard Board) Board {
@@ -66,8 +69,8 @@ func CopyBoard(currentBoard Board) Board {
 }
 
 // CalculateDeltaT is to calculate deltaT for untreated cell to cell model
-// Input: two int for target cells and infected cells, float64 for timeSteps
-// and a parameters object including several parameters that will be used in the calculation
+// Input: two int for target cells and infected cells, float64 for timeSteps and a
+// parameters object including several parameters that will be used in the calculation
 // Output: a int object for deltaT
 func CalculateDeltaT(T, I int, timeSteps float64, parameters Parameters) int {
 	transmission := CalculateCellTransmission(T, I, parameters)
@@ -77,8 +80,8 @@ func CalculateDeltaT(T, I int, timeSteps float64, parameters Parameters) int {
 }
 
 // CalculateDeltaI is to calculate deltaI for untreated cell to cell model
-// Input: two int for target cells and infected cells, float64 for timeSteps
-// and a parameters object including several parameters that will be used in the calculation
+// Input: two int for target cells and infected cells, float64 for timeSteps and a
+// parameters object including several parameters that will be used in the calculation
 // Output: a int object for deltaI
 func CalculateDeltaI(T, I int, timeSteps float64, parameters Parameters) int {
 	transmission := CalculateCellTransmission(T, I, parameters)
@@ -101,7 +104,8 @@ func CalculateCellTransmission(T, I int, parameters Parameters) float64 {
 }
 
 // UpdateState updates the state of infection cells and target cells
-// Input: a board object for currentBoard, two int objects for deltaT and deltaI which are generated from CalculateDeltaI and CalculateDeltaT
+// Input: a board object for currentBoard, two int objects for deltaT and deltaI
+// which are generated from CalculateDeltaI and CalculateDeltaT
 func UpdateState(currentBoard Board, deltaT, deltaI int) {
 	// Update the state of infectious cells at currentBoard
 	UpdateInfectiousCells(currentBoard, deltaI)
@@ -109,8 +113,10 @@ func UpdateState(currentBoard Board, deltaT, deltaI int) {
 	UpdateTargetCells2(currentBoard, deltaT)
 }
 
-// UpdateInfectiousCells collects all the infectious cells and then randomly selects the number of absolute deltaI
-// Input: a board object for current board, a int for deltaI which is calculated from CalculateDeltaI
+// UpdateInfectiousCells collects all the infectious cells and then randomly selects
+// the number of absolute deltaI
+// Input: a board object for current board, a int for deltaI which is calculated
+// from CalculateDeltaI
 func UpdateInfectiousCells(currentBoard Board, deltaI int) {
 	// Create a list to store the index of infectious cells
 	listInfectiousCells := make([]OrderedPair, 0)
