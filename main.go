@@ -129,23 +129,23 @@ func main() {
 	// temp: test inputs
 	width := 200
 	mode := "random"
-	numInfectious := 1000
+	numInfectious := 100
 	initialPosition := 500
-	numGens := 200
-	timeSteps := 100.0
+	numGens := 2000
+	timeSteps := 9.0
 	lambda := 100.0
-	omega := 0.001
-	dT := 0.001
+	omega := 0.01
+	dT := 0.1
 	delta := 0.005
-	threshold := 50000.0
-	rCap := 1000000.0
-	alpha := 100.0
+	threshold := 1500.0
+	rCap := 500.0
+	alpha := 200.0
 	gamma := 10.0
-	rho := 50.0
+	rho := 10.0
 	treatment := "no"
 	epsilonCell := 0.0
 	epsilonVirus := 0.0
-	imageFrequency := 10
+	imageFrequency := 5
 
 	var pos OrderedPair
 	pos.x = initialPosition
