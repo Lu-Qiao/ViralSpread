@@ -203,12 +203,15 @@ func RandomInfectCell(currentBoard Board, infectCell OrderedPair, cellAround []O
 	} else if beInfectedCell.y >= len(currentBoard[0]) {
 		beInfectedCell.y -= 2
 	}
-	// If the cell that be chosen is uninfectedm then change the state to infected.
+	// If the cell that be chosen is uninfectedm then change the state to infected and concVirus to 1.
 	// That means that the cell is infected by infectious cell
 	if currentBoard[beInfectedCell.x][beInfectedCell.y].state == "Uninfected" {
 		currentBoard[beInfectedCell.x][beInfectedCell.y].state = "Infected"
 		currentBoard[beInfectedCell.x][beInfectedCell.y].concVirus = 1
+		return currentBoard
 	}
+	// If cellAround only has one element, then return Board
+	// It means that there is no other uninfected
 	if len(cellAround) == 1 {
 		return currentBoard
 	} else {
