@@ -85,6 +85,7 @@ func OpenWeb() {
 
 	// create a vertical panel for general parameters
 	generalPanel := gwu.NewVerticalPanel()
+	generalPanel.Add(gwu.NewLabel("General parameters: "))
 	// width
 	widthPanel := gwu.NewHorizontalPanel()
 	widthPanel.Add(gwu.NewLabel("Width: "))
