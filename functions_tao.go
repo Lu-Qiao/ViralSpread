@@ -211,12 +211,15 @@ func RandomInfectCell(currentBoard Board, infectCell OrderedPair, cellAround []O
 		return currentBoard
 	}
 	// If cellAround only has one element, then return Board
-	// It means that there is no other uninfected
+	// It means that there is no uninfected cell around it, so return board
 	if len(cellAround) == 1 {
 		return currentBoard
 	} else {
+		// If there has other cells around it,
 		if selectIndex == len(cellAround)-1 {
+			// Delete the chosen cell in the list
 			cellAround = cellAround[0:selectIndex]
+			// Use recursion to randomly select again
 			currentBoard = RandomInfectCell(currentBoard, infectCell, cellAround)
 		} else {
 			cellAround = append(cellAround[:selectIndex], cellAround[selectIndex+1:]...)

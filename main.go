@@ -144,7 +144,7 @@ func main() {
 	rho := 10.0
 	treatment := "blockvirus"
 	epsilonCell := 0.8
-	epsilonVirus := 0.475
+	epsilonVirus := 0.6
 	imageFrequency := 1
 
 	var pos OrderedPair
