@@ -142,7 +142,7 @@ func main() {
 	alpha := 80.0
 	gamma := 10.0
 	rho := 10.0
-	treatment := "blockvirus"
+	treatment := "no"
 	epsilonCell := 1.0
 	epsilonVirus := 0.225
 	imageFrequency := 1
