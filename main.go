@@ -142,9 +142,9 @@ func main() {
 	alpha := 80.0
 	gamma := 10.0
 	rho := 10.0
-	treatment := "blockvirus"
+	treatment := "no"
 	epsilonCell := 0.8
-	epsilonVirus := 0.6
+	epsilonVirus := 0.475
 	imageFrequency := 1
 
 	var pos OrderedPair
