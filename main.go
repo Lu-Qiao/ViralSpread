@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+	OpenWeb()
 	// // os.Args[0] is program name ("ViralSpread")
 
 	// // os.Args[1] takes width
