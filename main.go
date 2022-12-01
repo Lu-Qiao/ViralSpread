@@ -129,22 +129,22 @@ func main() {
 	// temp: test inputs
 	width := 100
 	mode := "assign"
-	numInfectious := 100
+	numInfectious := 2
 	initialPosition := 50
-	numGens := 2000
-	timeSteps := 1.0
-	lambda := 100.0
-	omega := 0.01
-	dT := 0.1
-	delta := 0.005
-	threshold := 1500.0
+	numGens := 300
+	timeSteps := 0.1
+	lambda := 10000.0
+	omega := 0.001
+	dT := 0.02
+	delta := 5.0
+	threshold := 300.0
 	rCap := 500.0
 	alpha := 80.0
 	gamma := 10.0
 	rho := 10.0
-	treatment := "no"
-	epsilonCell := 1.0
-	epsilonVirus := 0.225
+	treatment := "blockvirus"
+	epsilonCell := 0.8
+	epsilonVirus := 0.475
 	imageFrequency := 1
 
 	var pos OrderedPair
