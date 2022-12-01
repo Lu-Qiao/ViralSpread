@@ -176,21 +176,35 @@ func UpdateVirusConcentrationNoTreatment(i, j int, currentBoard Board, timeSteps
 func UpdateVirusConcentrationBlockVirus(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) float64 {
 	return currentBoard[i][j].concVirus * ((1-parameters.epsilonVirus)*parameters.alpha*(1-currentBoard[i][j].concVirus/parameters.rCap) - parameters.gamma - parameters.rho) * timeSteps
 }
-
+// RandomInfectCell is to randomly select a cell around infectious cell to be infected
+// Input: a board object of currentBoard, a OrderedPair object of the position of infectious cell,
+// and a list object of the positions of the cells that are around infectious cells
+// Output: a board object that updates the cell which is infected by infectious cell 
 func RandomInfectCell(currentBoard Board, infectCell OrderedPair, cellAround []OrderedPair) Board {
+	// Set seed
 	rand.Seed(time.Now().UnixNano())
+	// Randomly select a index in cellAround list
 	selectIndex := rand.Intn(len(cellAround))
 	beInfectedCell := cellAround[selectIndex]
+	///// If the position is out of range
+	// If x is < 0 then changes position to the right side of infectious cell
 	if beInfectedCell.x < 0 {
 		beInfectedCell.x += 2
+	// If x position is larger than width if board,
+	// then change position to the left side of infectious cell
 	} else if beInfectedCell.x >= len(currentBoard) {
 		beInfectedCell.x -= 2
 	}
+	// If y is < 0 then changes position to the up side of infectious cell
 	if beInfectedCell.y < 0 {
 		beInfectedCell.y += 2
+	// If y position is larger than width if board,
+	// then change position to the down side of infectious cell
 	} else if beInfectedCell.y >= len(currentBoard[0]) {
 		beInfectedCell.y -= 2
 	}
+	// If the cell that be chosen is uninfectedm then change the state to infected.
+	// That means that the cell is infected by infectious cell
 	if currentBoard[beInfectedCell.x][beInfectedCell.y].state == "Uninfected" {
 		currentBoard[beInfectedCell.x][beInfectedCell.y].state = "Infected"
 		currentBoard[beInfectedCell.x][beInfectedCell.y].concVirus = 1
