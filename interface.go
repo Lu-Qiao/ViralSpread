@@ -234,6 +234,9 @@ func OpenWeb(allInputsChan chan Inputs) {
 
 	// add botton to promt simulation
 	btn := gwu.NewButton("Submit & Simulate")
+	btn.Style().SetWidthPx(190)
+	btn.Style().SetHeightPx(40)
+	btn.Style().SetFontSize("125%")
 	win.Add(btn)
 	// get inputs and start simulation
 	var allInputs Inputs
