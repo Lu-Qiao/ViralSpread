@@ -19,10 +19,20 @@ type Parameters struct {
 	// parameters for virus
 	rCap, alpha, gamma, rho float64
 	// parameters for treatments
-	treatment string
+	treatment                 string
 	epsilonCell, epsilonVirus float64
 }
 
+// OrderedPair
 type OrderedPair struct {
 	x, y int
+}
+
+// All inputs from WebApp
+type Inputs struct {
+	width, numInfectious, numGens, imageFrequency int
+	initialPosition                               OrderedPair
+	mode                                          string
+	timeSteps                                     float64
+	parameters                                    Parameters
 }

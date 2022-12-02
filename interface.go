@@ -1,87 +1,19 @@
-// Copyright (C) 2013 Andras Belicza. All rights reserved.
-//
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-// A GWU example application with a single public window (no sessions).
-
 package main
 
 import (
-	"fmt"
 	"gowut/gwu"
+	"strconv"
 )
 
-type myButtonHandler struct {
-	counter int
-	text    string
-}
-
-func (h *myButtonHandler) HandleEvent(e gwu.Event) {
-	if b, isButton := e.Src().(gwu.Button); isButton {
-		b.SetText(b.Text() + h.text)
-		h.counter++
-		b.SetToolTip(fmt.Sprintf("You've clicked %d times!", h.counter))
-		e.MarkDirty(b)
-	}
-}
-
-func OpenWeb() {
+func OpenWeb(allInputsChan chan Inputs) {
 	// Create and build a window
-	win := gwu.NewWindow("main", "Test GUI Window")
+	win := gwu.NewWindow("main", "Inputs")
 	win.Style().SetFullWidth()
 	win.SetHAlign(gwu.HACenter)
 	win.SetCellPadding(10)
 
 	// Page instruction
 	win.Add(gwu.NewLabel("Please enter all parameters:"))
-
-	// // ListBox examples
-	// p := gwu.NewHorizontalPanel()
-	// p.Style().SetBorder2(1, gwu.BrdStyleSolid, gwu.ClrBlack)
-	// p.SetCellPadding(2)
-	// p.Add(gwu.NewLabel("A drop-down list being"))
-	// widelb := gwu.NewListBox([]string{"50", "100", "150", "200", "250"})
-	// widelb.Style().SetWidth("50")
-	// widelb.AddEHandlerFunc(func(e gwu.Event) {
-	// 	widelb.Style().SetWidth(widelb.SelectedValue() + "px")
-	// 	e.MarkDirty(widelb)
-	// }, gwu.ETypeChange)
-	// p.Add(widelb)
-	// p.Add(gwu.NewLabel("pixel wide. And a multi-select list:"))
-	// listBox := gwu.NewListBox([]string{"First", "Second", "Third", "Forth", "Fifth", "Sixth"})
-	// listBox.SetMulti(true)
-	// listBox.SetRows(4)
-	// p.Add(listBox)
-	// countLabel := gwu.NewLabel("Selected count: 0")
-	// listBox.AddEHandlerFunc(func(e gwu.Event) {
-	// 	countLabel.SetText(fmt.Sprintf("Selected count: %d", len(listBox.SelectedIndices())))
-	// 	e.MarkDirty(countLabel)
-	// }, gwu.ETypeChange)
-	// p.Add(countLabel)
-	// win.Add(p)
-
-	// // Self-color changer check box
-	// greencb := gwu.NewCheckBox("I'm a check box. When checked, I'm green!")
-	// greencb.AddEHandlerFunc(func(e gwu.Event) {
-	// 	if greencb.State() {
-	// 		greencb.Style().SetBackground(gwu.ClrGreen)
-	// 	} else {
-	// 		greencb.Style().SetBackground("")
-	// 	}
-	// 	e.MarkDirty(greencb)
-	// }, gwu.ETypeClick)
-	// win.Add(greencb)
 
 	// create a vertical panel for general parameters
 	generalPanel := gwu.NewVerticalPanel()
@@ -100,8 +32,14 @@ func OpenWeb() {
 	// mode
 	modePanel := gwu.NewHorizontalPanel()
 	modePanel.Add(gwu.NewLabel("Mode: "))
-	// modeGroup := gwu.NewRadioGroup()
-	// modePanel.Add(gwu.NewRadioButton())
+	modeGroup := gwu.NewRadioGroup("mode")
+	rbs := []gwu.RadioButton{gwu.NewRadioButton("assign", modeGroup), gwu.NewRadioButton("random", modeGroup)}
+	rbs[0].SetState(true)
+	for _, rb := range rbs {
+		modePanel.Add(rb)
+	}
+
+	modePanel.SetCellPadding(5)
 	generalPanel.Add(modePanel)
 	// numInfectious
 	numInfectiousPanel := gwu.NewHorizontalPanel()
@@ -227,7 +165,7 @@ func OpenWeb() {
 	paraVirusPanel.Add(gwu.NewLabel("unit/day, "))
 
 	paraVirusPanel.Add(gwu.NewLabel("alpha")) // alpha
-	alphaTB := gwu.NewTextBox("0.02")
+	alphaTB := gwu.NewTextBox("80")
 	alphaTB.Style().SetWidth("50")
 	alphaTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraVirusPanel.Add(alphaTB)
@@ -286,30 +224,83 @@ func OpenWeb() {
 	treatmentVer.Add(treatmentPanel)
 	win.Add(treatmentVer)
 
-	// p.Add(gwu.NewLabel("You entered:"))
-	// nameLabel := gwu.NewLabel("")
-	// nameLabel.Style().SetColor(gwu.ClrRed)
-	// tb.AddEHandlerFunc(func(e gwu.Event) {
-	// 	nameLabel.SetText(tb.Text())
-	// 	e.MarkDirty(nameLabel)
-	// }, gwu.ETypeChange, gwu.ETypeKeyUp)
-	// p.Add(nameLabel)
-
+	// add botton to promt simulation
 	btn := gwu.NewButton("Submit & Simulate")
-	btn.AddEHandler(&myButtonHandler{text: ":-)"}, gwu.ETypeClick)
 	win.Add(btn)
-	btnsPanel := gwu.NewNaturalPanel()
+	// get inputs and start simulation
+	var allInputs Inputs
 	btn.AddEHandlerFunc(func(e gwu.Event) {
-		// Create and add a new button...
-		newbtn := gwu.NewButton(fmt.Sprintf("Extra #%d", btnsPanel.CompsCount()))
-		newbtn.AddEHandlerFunc(func(e gwu.Event) {
-			btnsPanel.Remove(newbtn) // ...which removes itself when clicked
-			e.MarkDirty(btnsPanel)
-		}, gwu.ETypeClick)
-		btnsPanel.Insert(newbtn, 0)
-		e.MarkDirty(btnsPanel)
+		// once click button, pass all inputs and start simulation!
+
+		// takes width
+		allInputs.width, _ = strconv.Atoi(widthTB.Text())
+
+		// takes mode
+		allInputs.mode = modeGroup.Selected().Text()
+
+		// takes numInfectious
+		allInputs.numInfectious, _ = strconv.Atoi(numInfectiousTB.Text())
+
+		// take initialPosition
+		allInputs.initialPosition.x, _ = strconv.Atoi(xPositionTB.Text())
+		allInputs.initialPosition.y, _ = strconv.Atoi(yPositionTB.Text())
+
+		// takes numGens
+		allInputs.numGens, _ = strconv.Atoi(numGensTB.Text())
+
+		// takes timeSteps
+		allInputs.timeSteps, _ = strconv.ParseFloat(timeStepsTB.Text(), 64)
+
+		// takes lambda
+		allInputs.parameters.lambda, _ = strconv.ParseFloat(lambdaTB.Text(), 64)
+
+		// takes omega
+		allInputs.parameters.omega, _ = strconv.ParseFloat(omegaTB.Text(), 64)
+
+		// takes dT
+		allInputs.parameters.dT, _ = strconv.ParseFloat(dTTB.Text(), 64)
+
+		// takes delta
+		allInputs.parameters.delta, _ = strconv.ParseFloat(deltaTB.Text(), 64)
+
+		// takes threshold
+		allInputs.parameters.threshold, _ = strconv.ParseFloat(thresholdTB.Text(), 64)
+
+		// takes rCap
+		allInputs.parameters.rCap, _ = strconv.ParseFloat(rCapTB.Text(), 64)
+
+		// takes alpha
+		allInputs.parameters.alpha, _ = strconv.ParseFloat(alphaTB.Text(), 64)
+
+		// takes gamma
+		allInputs.parameters.gamma, _ = strconv.ParseFloat(gammaTB.Text(), 64)
+
+		// takes rho
+		allInputs.parameters.rho, _ = strconv.ParseFloat(rhoTB.Text(), 64)
+
+		// takes treatment
+		if blockCellCB.State() && blockVirusCB.State() {
+			allInputs.parameters.treatment = "blockboth"
+		} else if blockCellCB.State() && !blockVirusCB.State() {
+			allInputs.parameters.treatment = "blockcell"
+		} else if !blockCellCB.State() && blockVirusCB.State() {
+			allInputs.parameters.treatment = "blockvirus"
+		} else {
+			allInputs.parameters.treatment = "no"
+		}
+
+		// takes epsilonCell
+		allInputs.parameters.epsilonCell, _ = strconv.ParseFloat(epsilonCellTB.Text(), 64)
+
+		// takes epsilonVirus
+		allInputs.parameters.epsilonVirus, _ = strconv.ParseFloat(epsilonVirusTB.Text(), 64)
+
+		// takes imageFrequency
+		allInputs.imageFrequency, _ = strconv.Atoi(imageFrequencyTB.Text())
+
+		// insert inputs into channel
+		allInputsChan <- allInputs
 	}, gwu.ETypeClick)
-	win.Add(btnsPanel)
 
 	// Create and start a GUI server (omitting error check)
 	server := gwu.NewServer("guitest", "localhost:8081")
