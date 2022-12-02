@@ -13,10 +13,15 @@ func OpenWeb(allInputsChan chan Inputs) {
 	win.SetCellPadding(10)
 
 	// Page instruction
-	win.Add(gwu.NewLabel("Please enter all parameters:"))
+	instructPanel := gwu.NewHorizontalPanel()
+	instructPanel.Style().SetWidthPx(800)
+	instructPanel.Style().SetFontSize("200%").SetFontStyle(gwu.FontWeightBolder)
+	instructPanel.Add(gwu.NewLabel("Please enter all parameters:"))
+	win.Add(instructPanel)
 
 	// create a vertical panel for general parameters
 	generalPanel := gwu.NewVerticalPanel()
+	generalPanel.Style().SetWidthPx(800)
 	generalPanel.Add(gwu.NewLabel("General parameters: "))
 	// width
 	widthPanel := gwu.NewHorizontalPanel()
@@ -108,6 +113,7 @@ func OpenWeb(allInputsChan chan Inputs) {
 	win.Add(generalPanel)
 	// parameters for cells
 	paraCellVer := gwu.NewVerticalPanel()
+	paraCellVer.Style().SetWidthPx(800)
 	paraCellVer.Add(gwu.NewLabel("Parameters for cells:"))
 	paraCellPanel := gwu.NewHorizontalPanel()
 
@@ -147,6 +153,7 @@ func OpenWeb(allInputsChan chan Inputs) {
 	win.Add(paraCellVer)
 	// parameters for virus
 	paraVirusVer := gwu.NewVerticalPanel()
+	paraVirusVer.Style().SetWidthPx(800)
 	paraVirusVer.Add(gwu.NewLabel("Parameters for virus:"))
 	paraVirusPanel := gwu.NewHorizontalPanel()
 
@@ -193,6 +200,7 @@ func OpenWeb(allInputsChan chan Inputs) {
 	win.Add(paraVirusVer)
 	// parameters for treatment
 	treatmentVer := gwu.NewVerticalPanel()
+	treatmentVer.Style().SetWidthPx(800)
 	treatmentVer.Add(gwu.NewLabel("Parameters for treatment:"))
 	treatmentPanel := gwu.NewHorizontalPanel()
 
