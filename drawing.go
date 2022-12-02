@@ -50,22 +50,5 @@ func DrawToImage(currentBoard Board, width int) image.Image {
 		}
 	}
 
-	// // from image package documentation
-	// // Create a png file
-	// f, err := os.Create("initial.png")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// if err := png.Encode(f, img); err != nil {
-	// 	f.Close()
-	// 	log.Fatal(err)
-	// }
-
-	// if err := f.Close(); err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// we want to return an image!
 	return img
 }

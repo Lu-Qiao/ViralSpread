@@ -31,7 +31,6 @@ func main() {
 		AssignStart(Tissue, initialPosition, parameters.threshold)
 	}
 
-	DrawToImage(Tissue, width)
 	fmt.Println("Simulating system.")
 
 	timePoints := SimulateViralSpread(Tissue, numGens, timeSteps, parameters, 0, numInfectious)
