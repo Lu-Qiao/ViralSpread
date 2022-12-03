@@ -1,5 +1,5 @@
 # ViralSpread
-Final project for the course 02:601 Programming for Scientist at CMU.
+Final project for the course 02:601 Programming for Scientists at CMU.
 
 ViralSpread simulates the spread of virus in cells on 2D board based on the following parameters.
 
