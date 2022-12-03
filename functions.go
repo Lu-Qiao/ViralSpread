@@ -110,7 +110,7 @@ func UpdateState(currentBoard Board, deltaT, deltaI int) {
 	// Update the state of infectious cells at currentBoard
 	UpdateInfectiousCells(currentBoard, deltaI)
 	// Update the state of target cells at currentBoard
-	UpdateTargetCells2(currentBoard, deltaT)
+	UpdateTargetCells(currentBoard, deltaT)
 }
 
 // UpdateInfectiousCells collects all the infectious cells and then randomly selects
@@ -118,6 +118,22 @@ func UpdateState(currentBoard Board, deltaT, deltaI int) {
 // Input: a board object for current board, a int for deltaI which is calculated
 // from CalculateDeltaI
 func UpdateInfectiousCells(currentBoard Board, deltaI int) {
+	listInfectiousCells := FindInfectiousCells(currentBoard)
+	// Set seed
+	rand.Seed(time.Now().UnixNano())
+	// Randomly select deltaI times of infectious cells and change their state to dead
+	if len(listInfectiousCells) != 0 {
+		for i := 0; i > deltaI; i-- {
+			randIndex := rand.Intn(len(listInfectiousCells))
+			// Change state of cell from infectious to dead
+			currentBoard[listInfectiousCells[randIndex].x][listInfectiousCells[randIndex].y].state = "Dead"
+		}
+	}
+}
+// CountInfectiousCells store the index of infectious cells on the currentBoard
+// Input: a board object for current board
+// Output: a slice of OrderedPair
+func FindInfectiousCells(currentBoard Board) []OrderedPair{
 	// Create a list to store the index of infectious cells
 	listInfectiousCells := make([]OrderedPair, 0)
 	// Loop through currentBoard to find infectious cells
@@ -134,21 +150,11 @@ func UpdateInfectiousCells(currentBoard Board, deltaI int) {
 			}
 		}
 	}
-
-	// Set seed
-	rand.Seed(time.Now().UnixNano())
-	// Randomly select deltaI times of infectious cells and change their state to dead
-	if len(listInfectiousCells) != 0 {
-		for i := 0; i > deltaI; i-- {
-			randIndex := rand.Intn(len(listInfectiousCells))
-			// Change state of cell from infectious to dead
-			currentBoard[listInfectiousCells[randIndex].x][listInfectiousCells[randIndex].y].state = "Dead"
-		}
-	}
+return listInfectiousCells
 }
 
-// UpdateCell
-// Input:
+// UpdateCell updates the state and virusconcentation of the current cells based on the treatment
+// Input: intergers for index, a board object for current board, timeStep as float64, parameters
 func UpdateCell(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) {
 	deltaR := 0.0
 	if parameters.treatment == "blockvirus" || parameters.treatment == "blockboth" {
@@ -163,16 +169,16 @@ func UpdateCell(i, j int, currentBoard Board, timeSteps float64, parameters Para
 	}
 }
 
-// UpdateVirusConcentrationNoTreatment
-// Input:
-// Output:
+// UpdateVirusConcentrationNoTreatment calculates deltaR when no treatment
+// Input: intergers for index, a board object for current board, timeStep as float64, parameters
+// Output: float64
 func UpdateVirusConcentrationNoTreatment(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) float64 {
 	return currentBoard[i][j].concVirus * (parameters.alpha*(1-currentBoard[i][j].concVirus/parameters.rCap) - parameters.gamma - parameters.rho) * timeSteps
 }
 
-// UpdateVirusConcentrationBlockVirus
-// Input:
-// Output:
+// UpdateVirusConcentrationBlockVirus calculates deltaR when virus replication is blocked
+// Input: intergers for index, a board object for current board, timeStep as float64, parameters
+// Output: float64
 func UpdateVirusConcentrationBlockVirus(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) float64 {
 	return currentBoard[i][j].concVirus * ((1-parameters.epsilonVirus)*parameters.alpha*(1-currentBoard[i][j].concVirus/parameters.rCap) - parameters.gamma - parameters.rho) * timeSteps
 }
@@ -230,7 +236,7 @@ func RandomInfectCell(currentBoard Board, infectCell OrderedPair, cellAround []O
 	return currentBoard
 }
 
-func UpdateTargetCells2(currentBoard Board, deltaT int) {
+func UpdateTargetCells(currentBoard Board, deltaT int) {
 	// Create a list to store the index of infectious cells
 	listInfectiousCells := make([]OrderedPair, 0)
 	// Loop through currentBoard to find infectious cells
