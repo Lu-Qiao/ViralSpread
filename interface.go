@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"gowut/gwu"
+	"os"
 	"strconv"
 )
 
@@ -164,7 +166,7 @@ func OpenWeb() {
 	paraVirusPanel.Add(thresholdTB)
 	paraVirusPanel.Add(gwu.NewLabel("unit, "))
 
-	paraVirusPanel.Add(gwu.NewLabel("rCap: ")) // rCap
+	paraVirusPanel.Add(gwu.NewLabel("Rcap: ")) // rCap
 	rCapTB := gwu.NewTextBox("500")
 	rCapTB.Style().SetWidth("50")
 	rCapTB.AddSyncOnETypes(gwu.ETypeKeyUp)
@@ -232,12 +234,25 @@ func OpenWeb() {
 	treatmentVer.Add(treatmentPanel)
 	win.Add(treatmentVer)
 
+	// create panel for buttons
+	btns := gwu.NewHorizontalPanel()
+
 	// add botton to promt simulation
 	btn := gwu.NewButton("Submit & Simulate")
 	btn.Style().SetWidthPx(190)
 	btn.Style().SetHeightPx(40)
 	btn.Style().SetFontSize("125%")
-	win.Add(btn)
+	btns.Add(btn)
+
+	// add botton to promt simulation
+	terminate := gwu.NewButton("Terminate Program")
+	terminate.Style().SetWidthPx(190)
+	terminate.Style().SetHeightPx(40)
+	terminate.Style().SetFontSize("125%")
+	btns.Add(terminate)
+
+	btns.SetCellPadding(10)
+	win.Add(btns)
 	// get inputs and start simulation
 	var allInputs Inputs
 	btn.AddEHandlerFunc(func(e gwu.Event) {
@@ -311,6 +326,12 @@ func OpenWeb() {
 
 		// simulate GIF
 		SimulateGIF(allInputs)
+	}, gwu.ETypeClick)
+
+	terminate.AddEHandlerFunc(func(e gwu.Event) {
+		// once click button, terminate program
+		fmt.Println("Program terminated!")
+		os.Exit(5)
 	}, gwu.ETypeClick)
 
 	// Create and start a GUI server (omitting error check)
