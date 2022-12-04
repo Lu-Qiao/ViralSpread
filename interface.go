@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func OpenWeb(allInputsChan chan Inputs) {
+func OpenWeb() {
 	// Create and build a window
 	win := gwu.NewWindow("main", "Inputs")
 	win.Style().SetFullWidth()
@@ -232,15 +232,12 @@ func OpenWeb(allInputsChan chan Inputs) {
 	treatmentVer.Add(treatmentPanel)
 	win.Add(treatmentVer)
 
-	// buttons
-	btns := gwu.NewHorizontalPanel()
-
 	// add botton to promt simulation
 	btn := gwu.NewButton("Submit & Simulate")
 	btn.Style().SetWidthPx(190)
 	btn.Style().SetHeightPx(40)
 	btn.Style().SetFontSize("125%")
-	btns.Add(btn)
+	win.Add(btn)
 	// get inputs and start simulation
 	var allInputs Inputs
 	btn.AddEHandlerFunc(func(e gwu.Event) {
@@ -312,19 +309,9 @@ func OpenWeb(allInputsChan chan Inputs) {
 		// takes imageFrequency
 		allInputs.imageFrequency, _ = strconv.Atoi(imageFrequencyTB.Text())
 
-		// insert inputs into channel
-		allInputsChan <- allInputs
+		// simulate GIF
+		SimulateGIF(allInputs)
 	}, gwu.ETypeClick)
-
-	// add botton to promt simulation
-	close := gwu.NewButton("Close Window")
-	close.Style().SetWidthPx(190)
-	close.Style().SetHeightPx(40)
-	close.Style().SetFontSize("125%")
-	btns.Add(close)
-
-	btns.SetCellPadding(10)
-	win.Add(btns)
 
 	// Create and start a GUI server (omitting error check)
 	server := gwu.NewServer("guitest", "localhost:8081")

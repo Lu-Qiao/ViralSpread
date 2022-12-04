@@ -1,9 +1,58 @@
 package main
 
 import (
+	"fmt"
+	"gifhelper"
 	"math/rand"
+	"os"
 	"time"
 )
+
+// SimulateGIF
+// Input: an Inputs object that contains all input parameters
+func SimulateGIF(allInputs Inputs) {
+	// Copy all parameters from inputs
+	width := allInputs.width
+	mode := allInputs.mode
+	numInfectious := allInputs.numInfectious
+	initialPosition := allInputs.initialPosition
+	numGens := allInputs.numGens
+	timeSteps := allInputs.timeSteps
+	imageFrequency := allInputs.imageFrequency
+	parameters := allInputs.parameters
+
+	// Initialize tissue
+	Tissue := InitializeTissue(width)
+	if mode == "random" {
+		RandomStart(Tissue, numInfectious, parameters.threshold)
+	} else if mode == "assign" {
+		AssignStart(Tissue, initialPosition, parameters.threshold)
+	}
+
+	fmt.Println("Simulating system.")
+
+	timePoints := SimulateViralSpread(Tissue, numGens, timeSteps, parameters, 0, numInfectious)
+
+	fmt.Println("Viral Spread has been simulated!")
+	fmt.Println("Ready to draw images.")
+
+	images := AnimateSystem(timePoints, width, imageFrequency)
+
+	fmt.Println("Images drawn!")
+
+	fmt.Println("Making GIF...")
+
+	// create filename according to inputs
+	filename := os.Args[0] + "_" + mode + "_" + parameters.treatment + "_treatment"
+
+	gifhelper.ImagesToGIF(images, filename)
+
+	fmt.Println("Animated GIF produced!")
+
+	fmt.Println("GIF saved successfully!")
+
+	fmt.Printf("Waiting for next simulation...\n\n")
+}
 
 // SimulateViralSpread simulates the viral spread system over numGens generations
 // starting with initialBoard using a time step of timeStep seconds.
@@ -130,10 +179,11 @@ func UpdateInfectiousCells(currentBoard Board, deltaI int) {
 		}
 	}
 }
+
 // CountInfectiousCells store the index of infectious cells on the currentBoard
 // Input: a board object for current board
 // Output: a slice of OrderedPair
-func FindInfectiousCells(currentBoard Board) []OrderedPair{
+func FindInfectiousCells(currentBoard Board) []OrderedPair {
 	// Create a list to store the index of infectious cells
 	listInfectiousCells := make([]OrderedPair, 0)
 	// Loop through currentBoard to find infectious cells
@@ -150,7 +200,7 @@ func FindInfectiousCells(currentBoard Board) []OrderedPair{
 			}
 		}
 	}
-return listInfectiousCells
+	return listInfectiousCells
 }
 
 // UpdateCell updates the state and virusconcentation of the current cells based on the treatment
