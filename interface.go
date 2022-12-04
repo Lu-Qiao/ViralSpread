@@ -61,13 +61,13 @@ func OpenWeb(allInputsChan chan Inputs) {
 	initialPositionPanel := gwu.NewHorizontalPanel()
 	initialPositionPanel.Add(gwu.NewLabel("Initial position: "))
 
-	initialPositionPanel.Add(gwu.NewLabel("X position")) // get x position
+	initialPositionPanel.Add(gwu.NewLabel("X position: ")) // get x position
 	xPositionTB := gwu.NewTextBox("50")
 	xPositionTB.Style().SetWidth("30")
 	xPositionTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	initialPositionPanel.Add(xPositionTB)
 
-	initialPositionPanel.Add(gwu.NewLabel("Y position")) // get y position
+	initialPositionPanel.Add(gwu.NewLabel("Y position: ")) // get y position
 	yPositionTB := gwu.NewTextBox("50")
 	yPositionTB.Style().SetWidth("30")
 	yPositionTB.AddSyncOnETypes(gwu.ETypeKeyUp)
@@ -114,31 +114,31 @@ func OpenWeb(allInputsChan chan Inputs) {
 	// parameters for cells
 	paraCellVer := gwu.NewVerticalPanel()
 	paraCellVer.Style().SetWidthPx(800)
-	paraCellVer.Add(gwu.NewLabel("Parameters for cells:"))
+	paraCellVer.Add(gwu.NewLabel("Parameters for cells: "))
 	paraCellPanel := gwu.NewHorizontalPanel()
 
-	paraCellPanel.Add(gwu.NewLabel("lambda")) // lambda
+	paraCellPanel.Add(gwu.NewLabel("λ: ")) // lambda
 	lambdaTB := gwu.NewTextBox("10000")
 	lambdaTB.Style().SetWidth("50")
 	lambdaTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraCellPanel.Add(lambdaTB)
 	paraCellPanel.Add(gwu.NewLabel("/day, "))
 
-	paraCellPanel.Add(gwu.NewLabel("omega")) // omega
+	paraCellPanel.Add(gwu.NewLabel("ω: ")) // omega
 	omegaTB := gwu.NewTextBox("0.001")
 	omegaTB.Style().SetWidth("50")
 	omegaTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraCellPanel.Add(omegaTB)
 	paraCellPanel.Add(gwu.NewLabel("/day, "))
 
-	paraCellPanel.Add(gwu.NewLabel("dT")) // dT
+	paraCellPanel.Add(gwu.NewLabel("dT: ")) // dT
 	dTTB := gwu.NewTextBox("0.02")
 	dTTB.Style().SetWidth("50")
 	dTTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraCellPanel.Add(dTTB)
 	paraCellPanel.Add(gwu.NewLabel("/day, "))
 
-	paraCellPanel.Add(gwu.NewLabel("delta")) // delta
+	paraCellPanel.Add(gwu.NewLabel("δ: ")) // delta
 	deltaTB := gwu.NewTextBox("5")
 	deltaTB.Style().SetWidth("50")
 	deltaTB.AddSyncOnETypes(gwu.ETypeKeyUp)
@@ -154,38 +154,38 @@ func OpenWeb(allInputsChan chan Inputs) {
 	// parameters for virus
 	paraVirusVer := gwu.NewVerticalPanel()
 	paraVirusVer.Style().SetWidthPx(800)
-	paraVirusVer.Add(gwu.NewLabel("Parameters for virus:"))
+	paraVirusVer.Add(gwu.NewLabel("Parameters for virus: "))
 	paraVirusPanel := gwu.NewHorizontalPanel()
 
-	paraVirusPanel.Add(gwu.NewLabel("threshold")) // threshold
+	paraVirusPanel.Add(gwu.NewLabel("Threshold: ")) // threshold
 	thresholdTB := gwu.NewTextBox("300")
 	thresholdTB.Style().SetWidth("50")
 	thresholdTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraVirusPanel.Add(thresholdTB)
 	paraVirusPanel.Add(gwu.NewLabel("unit, "))
 
-	paraVirusPanel.Add(gwu.NewLabel("rCap")) // rCap
+	paraVirusPanel.Add(gwu.NewLabel("rCap: ")) // rCap
 	rCapTB := gwu.NewTextBox("500")
 	rCapTB.Style().SetWidth("50")
 	rCapTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraVirusPanel.Add(rCapTB)
 	paraVirusPanel.Add(gwu.NewLabel("unit/day, "))
 
-	paraVirusPanel.Add(gwu.NewLabel("alpha")) // alpha
+	paraVirusPanel.Add(gwu.NewLabel("α: ")) // alpha
 	alphaTB := gwu.NewTextBox("80")
 	alphaTB.Style().SetWidth("50")
 	alphaTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraVirusPanel.Add(alphaTB)
 	paraVirusPanel.Add(gwu.NewLabel("unit/day, "))
 
-	paraVirusPanel.Add(gwu.NewLabel("gamma")) // gamma
+	paraVirusPanel.Add(gwu.NewLabel("γ: ")) // gamma
 	gammaTB := gwu.NewTextBox("5")
 	gammaTB.Style().SetWidth("50")
 	deltaTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraVirusPanel.Add(gammaTB)
 	paraVirusPanel.Add(gwu.NewLabel("unit/day, "))
 
-	paraVirusPanel.Add(gwu.NewLabel("rho")) // rho
+	paraVirusPanel.Add(gwu.NewLabel("ρ: ")) // rho
 	rhoTB := gwu.NewTextBox("5")
 	rhoTB.Style().SetWidth("50")
 	deltaTB.AddSyncOnETypes(gwu.ETypeKeyUp)
@@ -201,7 +201,7 @@ func OpenWeb(allInputsChan chan Inputs) {
 	// parameters for treatment
 	treatmentVer := gwu.NewVerticalPanel()
 	treatmentVer.Style().SetWidthPx(800)
-	treatmentVer.Add(gwu.NewLabel("Parameters for treatment:"))
+	treatmentVer.Add(gwu.NewLabel("Parameters for treatment: "))
 	treatmentPanel := gwu.NewHorizontalPanel()
 
 	blockCellCB := gwu.NewCheckBox("Block cell-to-cell transmission") // treatment
@@ -232,12 +232,15 @@ func OpenWeb(allInputsChan chan Inputs) {
 	treatmentVer.Add(treatmentPanel)
 	win.Add(treatmentVer)
 
+	// buttons
+	btns := gwu.NewHorizontalPanel()
+
 	// add botton to promt simulation
 	btn := gwu.NewButton("Submit & Simulate")
 	btn.Style().SetWidthPx(190)
 	btn.Style().SetHeightPx(40)
 	btn.Style().SetFontSize("125%")
-	win.Add(btn)
+	btns.Add(btn)
 	// get inputs and start simulation
 	var allInputs Inputs
 	btn.AddEHandlerFunc(func(e gwu.Event) {
@@ -312,6 +315,16 @@ func OpenWeb(allInputsChan chan Inputs) {
 		// insert inputs into channel
 		allInputsChan <- allInputs
 	}, gwu.ETypeClick)
+
+	// add botton to promt simulation
+	close := gwu.NewButton("Close Window")
+	close.Style().SetWidthPx(190)
+	close.Style().SetHeightPx(40)
+	close.Style().SetFontSize("125%")
+	btns.Add(close)
+
+	btns.SetCellPadding(10)
+	win.Add(btns)
 
 	// Create and start a GUI server (omitting error check)
 	server := gwu.NewServer("guitest", "localhost:8081")
