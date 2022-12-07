@@ -31,7 +31,7 @@ func SimulateGIF(allInputs Inputs) {
 
 	fmt.Println("Simulating system.")
 
-	timePoints := SimulateViralSpread(Tissue, numGens, timeSteps, parameters, 0, numInfectious)
+	timePoints := SimulateViralSpread(Tissue, numGens, timeSteps, parameters)
 
 	fmt.Println("Viral Spread has been simulated!")
 	fmt.Println("Ready to draw images.")
@@ -60,13 +60,13 @@ func SimulateGIF(allInputs Inputs) {
 // float64 time interval timeStep,parameters for cell and virus, and initial
 // number of target cells and infectious cells
 // Output: a slice of numGens + 1 total Board objects.
-func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, parameters Parameters, initialT, initialI int) []Board {
+func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, parameters Parameters) []Board {
 	timePoints := make([]Board, numGens+1)
 	timePoints[0] = initialBoard
 
 	// now range over the number of generations and update the Board each time
 	for i := 1; i <= numGens; i++ {
-		timePoints[i] = UpdateBoard(timePoints[i-1], timeSteps, parameters, initialT, initialI)
+		timePoints[i] = UpdateBoard(timePoints[i-1], timeSteps, parameters)
 	}
 
 	return timePoints
@@ -78,9 +78,11 @@ func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, par
 // including different necessary parameters for cells and virus, two int for T
 // and I which are target cells and infected cells
 // Output: a borad object which is an updated board from current board
-func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters, T, I int) Board {
+func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters) Board {
 	// Copy Board and store it in newBoard
 	newBoard := CopyBoard(currentBoard)
+	// get number of T and I
+	T, I := GetTandI(currentBoard)
 	// Calculate deltaT and deltaI
 	deltaT := CalculateDeltaT(T, I, timeSteps, parameters)
 	deltaI := CalculateDeltaI(T, I, timeSteps, parameters)
@@ -115,6 +117,26 @@ func CopyBoard(currentBoard Board) Board {
 		}
 	}
 	return newBoard
+}
+
+// GetTandI
+// Input: current board (Board)
+// output: number of target and infectious cells in the current boards (int, int)
+func GetTandI(currentBoard Board) (int, int) {
+	T := 0
+	I := 0
+
+	for i := range currentBoard {
+		for j := range currentBoard[i] {
+			if currentBoard[i][j].state == "Infected" {
+				T++
+			}
+			if currentBoard[i][j].state == "Infectious" {
+				I++
+			}
+		}
+	}
+	return T, I
 }
 
 // CalculateDeltaT is to calculate deltaT for untreated cell to cell model
