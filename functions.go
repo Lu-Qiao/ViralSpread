@@ -139,7 +139,6 @@ func SimulateViralSpread(initialBoard Board, numGens, numInfectious int, timeSte
 	}
 
 	return timePoints, cellTimePoints
-
 }
 
 // UpdateBoard updates current board with new deltaT and new daltaI
@@ -166,33 +165,6 @@ func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters) (
 		}
 	}
 	return newBoard, cellNumber
-}
-
-// UpdateBoardSingleProc
-// Inputs:
-func UpdateBoardSingleProc(currentBoard Board, timeSteps float64, parameters Parameters, outputChan chan Output, index int) {
-	// Copy Board and store it in newBoard
-	newBoard := CopyBoard(currentBoard)
-	// get number of different cells: N, T, I, D
-	cellNumber := GetCellNumber(currentBoard)
-	// Calculate deltaT and deltaI
-	deltaT := CalculateDeltaT(cellNumber[1], cellNumber[2], timeSteps, parameters)
-	deltaI := CalculateDeltaI(cellNumber[1], cellNumber[2], timeSteps, parameters)
-	// Update the states of infectious cells and target cells
-	UpdateState(newBoard, deltaT, deltaI)
-
-	for i := range newBoard {
-		for j := range newBoard[i] {
-			if newBoard[i][j].state == "Infected" {
-				UpdateCell(i, j, newBoard, timeSteps, parameters)
-			}
-		}
-	}
-	var output Output
-	output.board = newBoard
-	output.cellNumber = cellNumber
-	output.index = index
-	outputChan <- output
 }
 
 // CopyBoard is to do deep copy for current board to make sure each field would

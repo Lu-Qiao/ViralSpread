@@ -36,10 +36,3 @@ type Inputs struct {
 	timeSteps                                     float64
 	parameters                                    Parameters
 }
-
-// Output for multiprocs
-type Output struct {
-	board      Board
-	cellNumber []int
-	index      int
-}
