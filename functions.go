@@ -8,9 +8,9 @@ import (
 	"time"
 )
 
-// SimulateGIF
+// Simulate
 // Input: an Inputs object that contains all input parameters
-func SimulateGIF(allInputs Inputs) {
+func Simulate(allInputs Inputs) {
 	// Copy all parameters from inputs
 	width := allInputs.width
 	mode := allInputs.mode
@@ -28,21 +28,25 @@ func SimulateGIF(allInputs Inputs) {
 	} else if mode == "assign" {
 		AssignStart(Tissue, initialPosition, parameters.threshold)
 	}
-
+	// Simulations
 	fmt.Println("Simulating system.")
 
 	timePoints, cellTimePoints := SimulateViralSpread(Tissue, numGens, numInfectious, timeSteps, parameters)
 
-	_ = cellTimePoints
-
 	fmt.Println("Viral Spread has been simulated!")
 
+	// create filename according to inputs
+	filename := os.Args[0] + "_" + mode + "_" + parameters.treatment + "_treatment"
+
+	// Save data
 	fmt.Println("Ready to plot graph!")
 
-	SaveCellDataToCSV(timeSteps, cellTimePoints)
+	SaveCellDataToCSV(timeSteps, cellTimePoints, filename)
+	// PlotCellData(timeSteps, cellTimePoints)
 
 	fmt.Println("Graph drawn!")
 
+	// Make GIF
 	fmt.Println("Ready to draw images.")
 
 	images := AnimateSystem(timePoints, width, imageFrequency)
@@ -51,9 +55,6 @@ func SimulateGIF(allInputs Inputs) {
 
 	fmt.Println("Making GIF...")
 
-	// create filename according to inputs
-	filename := os.Args[0] + "_" + mode + "_" + parameters.treatment + "_treatment"
-
 	gifhelper.ImagesToGIF(images, filename)
 
 	fmt.Println("Animated GIF produced!")
@@ -61,6 +62,58 @@ func SimulateGIF(allInputs Inputs) {
 	fmt.Println("GIF saved successfully!")
 
 	fmt.Printf("Waiting for next simulation...\n\n")
+}
+
+// ExploreEffectiveness
+// Inputs:
+func ExploreEffectiveness(allInputs Inputs) {
+	// Copy all parameters from inputs
+	width := allInputs.width
+	mode := allInputs.mode
+	numInfectious := allInputs.numInfectious
+	initialPosition := allInputs.initialPosition
+	numGens := allInputs.numGens
+	timeSteps := allInputs.timeSteps
+	parameters := allInputs.parameters
+
+	// initialize data for output
+	finalCell := make([][]int, 100)
+	for i := range finalCell {
+		finalCell[i] = make([]int, 4)
+	}
+	// start iteration
+	fmt.Println("Please be patient, this will take a long time...")
+	for i := 0; i < 100; i++ {
+		// Initialize tissue
+		Tissue := InitializeTissue(width)
+		if mode == "random" {
+			RandomStart(Tissue, numInfectious, parameters.threshold)
+		} else if mode == "assign" {
+			AssignStart(Tissue, initialPosition, parameters.threshold)
+		}
+		// now range over the effectiveness of drugs and save the number of cell at the end
+
+		fmt.Printf("%d%% has been calculated.\n", i)
+		// iterate epsilon (effectiveness)
+		if parameters.treatment == "blockcell" {
+			parameters.epsilonCell = float64(i) / 100
+		} else if parameters.treatment == "blockvirus" {
+			parameters.epsilonVirus = float64(i) / 100
+		} else if parameters.treatment == "blockboth" {
+			parameters.epsilonCell = float64(i) / 100
+			parameters.epsilonVirus = float64(i) / 100
+		} else {
+			panic("Wrong selection! Please modify the data and resubmit.")
+		}
+
+		for j := 1; j <= numGens; j++ {
+			Tissue, finalCell[i] = UpdateBoard(Tissue, timeSteps, parameters)
+		}
+	}
+
+	SaveEffectivenessDataToCSV(finalCell)
+
+	fmt.Println("Data saved successfully!")
 }
 
 // SimulateViralSpread simulates the viral spread system over numGens generations
@@ -113,6 +166,33 @@ func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters) (
 		}
 	}
 	return newBoard, cellNumber
+}
+
+// UpdateBoardSingleProc
+// Inputs:
+func UpdateBoardSingleProc(currentBoard Board, timeSteps float64, parameters Parameters, outputChan chan Output, index int) {
+	// Copy Board and store it in newBoard
+	newBoard := CopyBoard(currentBoard)
+	// get number of different cells: N, T, I, D
+	cellNumber := GetCellNumber(currentBoard)
+	// Calculate deltaT and deltaI
+	deltaT := CalculateDeltaT(cellNumber[1], cellNumber[2], timeSteps, parameters)
+	deltaI := CalculateDeltaI(cellNumber[1], cellNumber[2], timeSteps, parameters)
+	// Update the states of infectious cells and target cells
+	UpdateState(newBoard, deltaT, deltaI)
+
+	for i := range newBoard {
+		for j := range newBoard[i] {
+			if newBoard[i][j].state == "Infected" {
+				UpdateCell(i, j, newBoard, timeSteps, parameters)
+			}
+		}
+	}
+	var output Output
+	output.board = newBoard
+	output.cellNumber = cellNumber
+	output.index = index
+	outputChan <- output
 }
 
 // CopyBoard is to do deep copy for current board to make sure each field would

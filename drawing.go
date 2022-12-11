@@ -59,9 +59,9 @@ func DrawToImage(currentBoard Board, width int) image.Image {
 
 // SaveCellDataToCSV
 // Inputs:
-func SaveCellDataToCSV(timeSteps float64, cellTimePoints [][]int) {
+func SaveCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename string) {
 	// create csv file
-	csvFile, err := os.Create("Number of target cells and infectious cells over time.csv")
+	csvFile, err := os.Create(filename + ".out.csv")
 	if err != nil {
 		log.Fatalf("failed creating file: %s", err)
 	}
@@ -83,3 +83,71 @@ func SaveCellDataToCSV(timeSteps float64, cellTimePoints [][]int) {
 	csvwriter.Flush()
 	csvFile.Close()
 }
+
+// SaveEffectivenessDataToCSV()
+// Inputs:
+func SaveEffectivenessDataToCSV(finalCell [][]int) {
+	// create csv file
+	csvFile, err := os.Create("effectiveness.csv")
+	if err != nil {
+		log.Fatalf("failed creating file: %s", err)
+	}
+	// initiate writer
+	csvwriter := csv.NewWriter(csvFile)
+	// write header to csv file
+	header := []string{"Effectiveness", "Number of normal cells", "Number of target cells", "Number of infectious cells", "Number of dead cells"}
+	_ = csvwriter.Write(header)
+	// write data
+	for i := range finalCell {
+		time := fmt.Sprintf("%f", float64(i)/100)
+		N := fmt.Sprintf("%d", finalCell[i][0])
+		T := fmt.Sprintf("%d", finalCell[i][1])
+		I := fmt.Sprintf("%d", finalCell[i][2])
+		D := fmt.Sprintf("%d", finalCell[i][3])
+		row := []string{time, N, T, I, D}
+		_ = csvwriter.Write(row)
+	}
+	csvwriter.Flush()
+	csvFile.Close()
+}
+
+// // PlotCellData
+// // Inputs:
+// func PlotCellData(timeSteps float64, cellTimePoints [][]int) {
+// 	// create plot
+// 	p := plot.New()
+// 	// create writer to the plot
+// 	wt, err := p.WriterTo(300, 400, "png")
+// 	if err != nil {
+// 		log.Fatalf("could not create writer: %v", err)
+// 	}
+// 	// create png file
+// 	f, err := os.Create("Number of target cells and infectious cells over time.png")
+// 	if err != nil {
+// 		log.Fatalf("could not create image: %v", err)
+// 	}
+// 	// ************************************************************************************
+// 	// create scatter
+// 	// times := make([]float64, len(cellTimePoints[0]))
+// 	data := make(plotter.XYs, len(cellTimePoints))
+// 	for i, val := range data {
+// 		// data[i] = []float64{float64(i) * timeSteps, float64(cellTimePoints[i][0])}
+// 		val.X = float64(i) * timeSteps
+// 		val.Y = float64(cellTimePoints[i][0])
+// 	}
+// 	s, err := plotter.NewScatter(data)
+// 	if err != nil {
+// 		log.Fatalf("could not create scatter: %v", err)
+// 	}
+// 	p.Add(s)
+// 	// ************************************************************************************
+// 	// write scatter to plot
+// 	_, err = wt.WriteTo(f)
+// 	if err != nil {
+// 		log.Fatalf("could not write to image: %v", err)
+// 	}
+
+// 	if err := f.Close(); err != nil {
+// 		log.Fatalf("could not close image: %v", err)
+// 	}
+// }
