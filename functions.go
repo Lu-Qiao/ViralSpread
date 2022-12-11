@@ -31,9 +31,18 @@ func SimulateGIF(allInputs Inputs) {
 
 	fmt.Println("Simulating system.")
 
-	timePoints := SimulateViralSpread(Tissue, numGens, timeSteps, parameters)
+	timePoints, cellTimePoints := SimulateViralSpread(Tissue, numGens, numInfectious, timeSteps, parameters)
+
+	_ = cellTimePoints
 
 	fmt.Println("Viral Spread has been simulated!")
+
+	fmt.Println("Ready to plot graph!")
+
+	SaveCellDataToCSV(timeSteps, cellTimePoints)
+
+	fmt.Println("Graph drawn!")
+
 	fmt.Println("Ready to draw images.")
 
 	images := AnimateSystem(timePoints, width, imageFrequency)
@@ -60,16 +69,23 @@ func SimulateGIF(allInputs Inputs) {
 // float64 time interval timeStep,parameters for cell and virus, and initial
 // number of target cells and infectious cells
 // Output: a slice of numGens + 1 total Board objects.
-func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, parameters Parameters) []Board {
+func SimulateViralSpread(initialBoard Board, numGens, numInfectious int, timeSteps float64, parameters Parameters) ([]Board, [][]int) {
 	timePoints := make([]Board, numGens+1)
 	timePoints[0] = initialBoard
+	// order: normal cell, target cell, infectious cell, dead cell
+	cellTimePoints := make([][]int, numGens+1)
+	for i := range cellTimePoints {
+		cellTimePoints[i] = make([]int, 4)
+	}
+	cellTimePoints[0][0] = len(initialBoard)*len(initialBoard[0]) - numInfectious
+	cellTimePoints[0][2] = numInfectious
 
 	// now range over the number of generations and update the Board each time
 	for i := 1; i <= numGens; i++ {
-		timePoints[i] = UpdateBoard(timePoints[i-1], timeSteps, parameters)
+		timePoints[i], cellTimePoints[i] = UpdateBoard(timePoints[i-1], timeSteps, parameters)
 	}
 
-	return timePoints
+	return timePoints, cellTimePoints
 
 }
 
@@ -78,14 +94,14 @@ func SimulateViralSpread(initialBoard Board, numGens int, timeSteps float64, par
 // including different necessary parameters for cells and virus, two int for T
 // and I which are target cells and infected cells
 // Output: a borad object which is an updated board from current board
-func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters) Board {
+func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters) (Board, []int) {
 	// Copy Board and store it in newBoard
 	newBoard := CopyBoard(currentBoard)
-	// get number of T and I
-	T, I := GetTandI(currentBoard)
+	// get number of different cells: N, T, I, D
+	cellNumber := GetCellNumber(currentBoard)
 	// Calculate deltaT and deltaI
-	deltaT := CalculateDeltaT(T, I, timeSteps, parameters)
-	deltaI := CalculateDeltaI(T, I, timeSteps, parameters)
+	deltaT := CalculateDeltaT(cellNumber[1], cellNumber[2], timeSteps, parameters)
+	deltaI := CalculateDeltaI(cellNumber[1], cellNumber[2], timeSteps, parameters)
 	// Update the states of infectious cells and target cells
 	UpdateState(newBoard, deltaT, deltaI)
 
@@ -96,7 +112,7 @@ func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters) B
 			}
 		}
 	}
-	return newBoard
+	return newBoard, cellNumber
 }
 
 // CopyBoard is to do deep copy for current board to make sure each field would
@@ -119,24 +135,28 @@ func CopyBoard(currentBoard Board) Board {
 	return newBoard
 }
 
-// GetTandI
+// GetCellNumber
 // Input: current board (Board)
-// output: number of target and infectious cells in the current boards (int, int)
-func GetTandI(currentBoard Board) (int, int) {
-	T := 0
-	I := 0
-
+// output: number of different cells in the current boards (int, int)
+func GetCellNumber(currentBoard Board) []int {
+	cellNumber := make([]int, 4)
+	// order: normal cell, target cell, infectious cell, dead cell
 	for i := range currentBoard {
 		for j := range currentBoard[i] {
 			if currentBoard[i][j].state == "Infected" {
-				T++
+				cellNumber[1]++
 			}
 			if currentBoard[i][j].state == "Infectious" {
-				I++
+				cellNumber[2]++
+			}
+			if currentBoard[i][j].state == "Dead" {
+				cellNumber[3]++
 			}
 		}
 	}
-	return T, I
+	cellNumber[0] = len(currentBoard)*len(currentBoard[0]) - cellNumber[1] - cellNumber[2] - cellNumber[3]
+
+	return cellNumber
 }
 
 // CalculateDeltaT is to calculate deltaT for untreated cell to cell model

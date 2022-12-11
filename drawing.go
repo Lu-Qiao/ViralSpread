@@ -1,8 +1,12 @@
 package main
 
 import (
+	"encoding/csv"
+	"fmt"
 	"image"
 	"image/color"
+	"log"
+	"os"
 )
 
 // AnimateSystem takes a slice of Board objects along with a width
@@ -51,4 +55,31 @@ func DrawToImage(currentBoard Board, width int) image.Image {
 	}
 
 	return img
+}
+
+// SaveCellDataToCSV
+// Inputs:
+func SaveCellDataToCSV(timeSteps float64, cellTimePoints [][]int) {
+	// create csv file
+	csvFile, err := os.Create("Number of target cells and infectious cells over time.csv")
+	if err != nil {
+		log.Fatalf("failed creating file: %s", err)
+	}
+	// initiate writer
+	csvwriter := csv.NewWriter(csvFile)
+	// write header to csv file
+	header := []string{"Time (day)", "Number of normal cells", "Number of target cells", "Number of infectious cells", "Number of dead cells"}
+	_ = csvwriter.Write(header)
+	// write data
+	for i := range cellTimePoints {
+		time := fmt.Sprintf("%f", float64(i)*timeSteps)
+		N := fmt.Sprintf("%d", cellTimePoints[i][0])
+		T := fmt.Sprintf("%d", cellTimePoints[i][1])
+		I := fmt.Sprintf("%d", cellTimePoints[i][2])
+		D := fmt.Sprintf("%d", cellTimePoints[i][3])
+		row := []string{time, N, T, I, D}
+		_ = csvwriter.Write(row)
+	}
+	csvwriter.Flush()
+	csvFile.Close()
 }

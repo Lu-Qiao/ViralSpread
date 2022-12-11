@@ -141,7 +141,7 @@ func OpenWeb() {
 	paraCellPanel.Add(gwu.NewLabel("/day, "))
 
 	paraCellPanel.Add(gwu.NewLabel("δ: ")) // delta
-	deltaTB := gwu.NewTextBox("5")
+	deltaTB := gwu.NewTextBox("0.5")
 	deltaTB.Style().SetWidth("50")
 	deltaTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraCellPanel.Add(deltaTB)
