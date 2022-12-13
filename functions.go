@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// Simulate
+// Simulate is the highest level function
 // Input: an Inputs object that contains all input parameters
 func Simulate(allInputs Inputs) {
 	// Copy all parameters from inputs
@@ -23,9 +23,12 @@ func Simulate(allInputs Inputs) {
 
 	// Initialize tissue
 	Tissue := InitializeTissue(width)
+	// If mode equal random
 	if mode == "random" {
+		// then call RandomStart to random start the infection
 		RandomStart(Tissue, numInfectious, parameters.threshold)
 	} else if mode == "assign" {
+		// Assign specific position for infection
 		AssignStart(Tissue, initialPosition, parameters.threshold)
 	}
 	// Simulations
@@ -48,13 +51,13 @@ func Simulate(allInputs Inputs) {
 
 	// Make GIF
 	fmt.Println("Ready to draw images.")
-
+	// Create images
 	images := AnimateSystem(timePoints, width, imageFrequency)
 
 	fmt.Println("Images drawn!")
 
 	fmt.Println("Making GIF...")
-
+	// To Gif
 	gifhelper.ImagesToGIF(images, filename)
 
 	fmt.Println("Animated GIF produced!")
@@ -65,7 +68,8 @@ func Simulate(allInputs Inputs) {
 }
 
 // ExploreEffectiveness
-// Inputs:
+// Inputs: an Inputs object that contains all input parameters
+// Output: csv file containing effectiveness of treatment
 func ExploreEffectiveness(allInputs Inputs) {
 	// Copy all parameters from inputs
 	width := allInputs.width
@@ -105,12 +109,12 @@ func ExploreEffectiveness(allInputs Inputs) {
 		} else {
 			panic("Wrong selection! Please modify the data and resubmit.")
 		}
-
+		// Go to next generation
 		for j := 1; j <= numGens; j++ {
 			Tissue, finalCell[i] = UpdateBoard(Tissue, timeSteps, parameters)
 		}
 	}
-
+	// Save data to csv, so can do further calculation
 	SaveEffectivenessDataToCSV(finalCell)
 
 	fmt.Println("Data saved successfully!")
@@ -125,12 +129,16 @@ func ExploreEffectiveness(allInputs Inputs) {
 func SimulateViralSpread(initialBoard Board, numGens, numInfectious int, timeSteps float64, parameters Parameters) ([]Board, [][]int) {
 	timePoints := make([]Board, numGens+1)
 	timePoints[0] = initialBoard
+	// Count number of cells (each type) in each generation
 	// order: normal cell, target cell, infectious cell, dead cell
 	cellTimePoints := make([][]int, numGens+1)
+	// i is generation, and j matchs to the order of cell types
 	for i := range cellTimePoints {
 		cellTimePoints[i] = make([]int, 4)
 	}
+	// the number of uninfectious cells at the beginning
 	cellTimePoints[0][0] = len(initialBoard)*len(initialBoard[0]) - numInfectious
+	// the number of infectious cells at the beginning
 	cellTimePoints[0][2] = numInfectious
 
 	// now range over the number of generations and update the Board each time
@@ -156,10 +164,12 @@ func UpdateBoard(currentBoard Board, timeSteps float64, parameters Parameters) (
 	deltaI := CalculateDeltaI(cellNumber[1], cellNumber[2], timeSteps, parameters)
 	// Update the states of infectious cells and target cells
 	UpdateState(newBoard, deltaT, deltaI)
-
+	// range through each square of the board
 	for i := range newBoard {
 		for j := range newBoard[i] {
+			// if cell state is infected
 			if newBoard[i][j].state == "Infected" {
+				// updates cell
 				UpdateCell(i, j, newBoard, timeSteps, parameters)
 			}
 		}
@@ -193,6 +203,7 @@ func CopyBoard(currentBoard Board) Board {
 func GetCellNumber(currentBoard Board) []int {
 	cellNumber := make([]int, 4)
 	// order: normal cell, target cell, infectious cell, dead cell
+	// range through each square, and count each type of cell
 	for i := range currentBoard {
 		for j := range currentBoard[i] {
 			if currentBoard[i][j].state == "Infected" {
@@ -206,6 +217,7 @@ func GetCellNumber(currentBoard Board) []int {
 			}
 		}
 	}
+	// uninfected cells can be counted by total cells - other cells type
 	cellNumber[0] = len(currentBoard)*len(currentBoard[0]) - cellNumber[1] - cellNumber[2] - cellNumber[3]
 
 	return cellNumber
@@ -216,8 +228,10 @@ func GetCellNumber(currentBoard Board) []int {
 // parameters object including several parameters that will be used in the calculation
 // Output: a int object for deltaT
 func CalculateDeltaT(T, I int, timeSteps float64, parameters Parameters) int {
+	// calculate transmission
 	transmission := CalculateCellTransmission(T, I, parameters)
-
+	
+	// use math equation to calculate deltaT
 	deltaT := (parameters.lambda - transmission - parameters.dT) * timeSteps
 	return int(deltaT)
 }
@@ -228,19 +242,23 @@ func CalculateDeltaT(T, I int, timeSteps float64, parameters Parameters) int {
 // Output: a int object for deltaI
 func CalculateDeltaI(T, I int, timeSteps float64, parameters Parameters) int {
 	transmission := CalculateCellTransmission(T, I, parameters)
-
+	
+	// use math equation to calculate deltaI
 	deltaI := (transmission - parameters.delta*float64(I)) * timeSteps
 	return int(deltaI)
 }
 
 // CalculateCellTransmission (omega*T*I)
-// Input:
-// Output:
+// Input: two int for target cells and infected cells, Parameters object
+// Output: a float64 object for transmission
 func CalculateCellTransmission(T, I int, parameters Parameters) float64 {
 	transmission := 0.0
+	// under different condition, it has different equation
+	// if simulate treatment model
 	if parameters.treatment == "blockcell" || parameters.treatment == "blockboth" {
 		transmission = parameters.epsilonCell * parameters.omega * float64(I) * float64(T)
 	} else {
+		// model withour treatment
 		transmission = parameters.omega * float64(I) * float64(T)
 	}
 	return transmission
@@ -301,13 +319,17 @@ func FindInfectiousCells(currentBoard Board) []OrderedPair {
 // Input: intergers for index, a board object for current board, timeStep as float64, parameters
 func UpdateCell(i, j int, currentBoard Board, timeSteps float64, parameters Parameters) {
 	deltaR := 0.0
+	// under different condition, it has different equation
+	// if simulate treatment model
 	if parameters.treatment == "blockvirus" || parameters.treatment == "blockboth" {
 		deltaR = UpdateVirusConcentrationBlockVirus(i, j, currentBoard, timeSteps, parameters)
 	} else {
+		// model withour treatment
 		deltaR = UpdateVirusConcentrationNoTreatment(i, j, currentBoard, timeSteps, parameters)
 	}
-
+	// update virus concentration
 	currentBoard[i][j].concVirus += deltaR
+	// if virus concentration in cell exceeds threshold, then turn to infectious
 	if currentBoard[i][j].concVirus >= parameters.threshold {
 		currentBoard[i][j].state = "Infectious"
 	}
@@ -373,13 +395,17 @@ func RandomInfectCell(currentBoard Board, infectCell OrderedPair, cellAround []O
 			// Use recursion to randomly select again
 			currentBoard = RandomInfectCell(currentBoard, infectCell, cellAround)
 		} else {
+			// Delete the cell
 			cellAround = append(cellAround[:selectIndex], cellAround[selectIndex+1:]...)
+			// Choose again
 			currentBoard = RandomInfectCell(currentBoard, infectCell, cellAround)
 		}
 	}
 	return currentBoard
 }
 
+// To update target cell, infect cells which are near infectious cells
+// Input: a borad object for current board, int for deltaT 
 func UpdateTargetCells(currentBoard Board, deltaT int) {
 	// Create a list to store the index of infectious cells
 	listInfectiousCells := make([]OrderedPair, 0)
@@ -402,11 +428,15 @@ func UpdateTargetCells(currentBoard Board, deltaT int) {
 	if len(listInfectiousCells) != 0 {
 		for i := 0; i < deltaT; i++ {
 			var infectiousCell, up, down, left, right OrderedPair
+			// Randomly select one infectious cell
 			randIndex := rand.Intn(len(listInfectiousCells))
 			infectiousCell = listInfectiousCells[randIndex]
+			// set position of cells near infectious cell
 			up.x, down.x, left.x, right.x = infectiousCell.x-1, infectiousCell.x+1, infectiousCell.x, infectiousCell.x
 			up.y, down.y, left.y, right.y = infectiousCell.y, infectiousCell.y, infectiousCell.y-1, infectiousCell.y+1
 			cellAround := []OrderedPair{up, down, left, right}
+			// Randomly select a cell near infectious cell using RandomInfectCell
+			// update board
 			currentBoard = RandomInfectCell(currentBoard, infectiousCell, cellAround)
 		}
 	}
