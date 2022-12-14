@@ -8,10 +8,19 @@ ViralSpread simulates the spread of virus in cells on 2D board based on the foll
 2. random - randomly spread n infectious cells across the board
 
 ## State of the cells
+### Single Virus Infection
 1. Uninfected
 2. Infected
 3. Infectious
 4. Dead
+### Double Virus Coinfection
+1. Uninfected
+2. Infected1
+3. Infectious1
+4. Infected2
+5. Infectious2
+6. Dead1
+6. Dead2
 
 ## Treatment options
 1. no
