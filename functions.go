@@ -230,9 +230,9 @@ func GetCellNumber(currentBoard Board) []int {
 func CalculateDeltaT(T, I int, timeSteps float64, parameters Parameters) int {
 	// calculate transmission
 	transmission := CalculateCellTransmission(T, I, parameters)
-	
+
 	// use math equation to calculate deltaT
-	deltaT := (parameters.lambda - transmission - parameters.dT) * timeSteps
+	deltaT := (parameters.lambda - transmission - parameters.dT*float64(T)) * timeSteps
 	return int(deltaT)
 }
 
@@ -242,7 +242,7 @@ func CalculateDeltaT(T, I int, timeSteps float64, parameters Parameters) int {
 // Output: a int object for deltaI
 func CalculateDeltaI(T, I int, timeSteps float64, parameters Parameters) int {
 	transmission := CalculateCellTransmission(T, I, parameters)
-	
+
 	// use math equation to calculate deltaI
 	deltaI := (transmission - parameters.delta*float64(I)) * timeSteps
 	return int(deltaI)
@@ -405,7 +405,7 @@ func RandomInfectCell(currentBoard Board, infectCell OrderedPair, cellAround []O
 }
 
 // To update target cell, infect cells which are near infectious cells
-// Input: a borad object for current board, int for deltaT 
+// Input: a borad object for current board, int for deltaT
 func UpdateTargetCells(currentBoard Board, deltaT int) {
 	// Create a list to store the index of infectious cells
 	listInfectiousCells := make([]OrderedPair, 0)
