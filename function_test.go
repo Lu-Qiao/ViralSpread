@@ -19,8 +19,8 @@ func TestRandomInfectCell(t *testing.T) {
 	var count1 int
 
 	t1.startInfection.x, t1.startInfection.y = 3,3
-	above.x, below.x, right.x, left.x = 3, 3, 4, 2
-	above.y, below.y, right.y, left.y = 2, 4, 3, 3
+	above.x, below.x, right.x, left.x = 2, 4, 3, 3
+	above.y, below.y, right.y, left.y = 3, 3, 4, 2
 	t1.answer = 1
 	cellAround1 := []OrderedPair{above, below, right, left}
 
@@ -41,26 +41,26 @@ func TestRandomInfectCell(t *testing.T) {
 
 	///// Test if function selects the cell we expected
 	var t2 Test
-	var above1, below1, right1, left1 OrderedPair
+	var above2, below2, right2, left2 OrderedPair
 	var count2 int
 	
 	t2.answer = 0
 	t2.startInfection.x, t1.startInfection.y = 3,3
-	above1.x, below1.x, right1.x, left1.x = 3, 3, 4, 2
-	above1.y, below1.y, right1.y, left1.y = 2, 4, 3, 3
-	cellAround := []OrderedPair{above, below, right, left}
+	above2.x, below2.x, right2.x, left2.x = 2, 4, 3, 3
+	above2.y, below2.y, right2.y, left2.y = 3, 3, 4, 2
+	cellAround := []OrderedPair{above2, below2, right2, left2}
 	
 	t2.board = InitializeTissue(5)
-	t2.board[3][2].state, t2.board[3][4].state,t2.board[4][3].state = "Infected", "Infected", "Infected"
-	t2.board = RandomInfectCell(t1.board, t2.startInfection, cellAround)
+	t2.board[2][3].state, t2.board[4][3].state,t2.board[3][4].state = "Infected", "Infected", "Infected"
+	t2.board = RandomInfectCell(t2.board, t2.startInfection, cellAround)
 	
 	for i := 0; i < len(cellAround); i++ {
-		if t1.board[cellAround[i].x][cellAround[i].y].state == "Uninfected" {
+		if t2.board[cellAround[i].x][cellAround[i].y].state == "Uninfected" {
 			count2++
 		}
 	}
-	if t1.answer != count2 {
-		t.Errorf("Expect %d uninfected cell around infectious cell, got %d", t1.answer, count2)
+	if t2.answer != count2 {
+		t.Errorf("Expect %d uninfected cell around infectious cell, got %d", t2.answer, count2)
 	} else {
 		fmt.Println("Test RandomInfectCell: the expected cell is infected!")
 	}
