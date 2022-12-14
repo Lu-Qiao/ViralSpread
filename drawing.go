@@ -81,35 +81,6 @@ func SaveCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename strin
 	// initiate writer
 	csvwriter := csv.NewWriter(csvFile)
 	// write header to csv file
-	header := []string{"Time (day)", "Number of normal cells", "Number of target cells1", "Number of infectious cells1", "Number of target cells2", "Number of infectious cells2", "Number of dead cells"}
-	_ = csvwriter.Write(header)
-	// write data
-	for i := range cellTimePoints {
-		time := fmt.Sprintf("%f", float64(i)*timeSteps)
-		N := fmt.Sprintf("%d", cellTimePoints[i][0])
-		T1 := fmt.Sprintf("%d", cellTimePoints[i][1])
-		I1 := fmt.Sprintf("%d", cellTimePoints[i][2])
-		T2 := fmt.Sprintf("%d", cellTimePoints[i][1])
-		I2 := fmt.Sprintf("%d", cellTimePoints[i][2])
-		D := fmt.Sprintf("%d", cellTimePoints[i][3])
-		row := []string{time, N, T1, I1, T2, I2, D}
-		_ = csvwriter.Write(row)
-	}
-	csvwriter.Flush()
-	csvFile.Close()
-}
-
-// SaveCellDataToCSV
-// Inputs:
-func SaveCoCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename string) {
-	// create csv file
-	csvFile, err := os.Create(filename + "_coinfection.out.csv")
-	if err != nil {
-		log.Fatalf("failed creating file: %s", err)
-	}
-	// initiate writer
-	csvwriter := csv.NewWriter(csvFile)
-	// write header to csv file
 	header := []string{"Time (day)", "Number of normal cells", "Number of target cells", "Number of infectious cells", "Number of dead cells"}
 	_ = csvwriter.Write(header)
 	// write data
@@ -120,6 +91,35 @@ func SaveCoCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename str
 		I := fmt.Sprintf("%d", cellTimePoints[i][2])
 		D := fmt.Sprintf("%d", cellTimePoints[i][3])
 		row := []string{time, N, T, I, D}
+		_ = csvwriter.Write(row)
+	}
+	csvwriter.Flush()
+	csvFile.Close()
+}
+
+// SaveCoCellDataToCSV
+// Inputs:
+func SaveCoCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename string) {
+	// create csv file
+	csvFile, err := os.Create(filename + "_coinfection.out.csv")
+	if err != nil {
+		log.Fatalf("failed creating file: %s", err)
+	}
+	// initiate writer
+	csvwriter := csv.NewWriter(csvFile)
+	// write header to csv file
+	header := []string{"Time (day)", "Number of normal cells", "Number of target cells1", "Number of infectious cells1", "Number of target cells2", "Number of infectious cells2", "Number of dead cells"}
+	_ = csvwriter.Write(header)
+	// write data
+	for i := range cellTimePoints {
+		time := fmt.Sprintf("%f", float64(i)*timeSteps)
+		N := fmt.Sprintf("%d", cellTimePoints[i][0])
+		T1 := fmt.Sprintf("%d", cellTimePoints[i][1])
+		I1 := fmt.Sprintf("%d", cellTimePoints[i][2])
+		T2 := fmt.Sprintf("%d", cellTimePoints[i][3])
+		I2 := fmt.Sprintf("%d", cellTimePoints[i][4])
+		D := fmt.Sprintf("%d", cellTimePoints[i][5])
+		row := []string{time, N, T1, I1, T2, I2, D}
 		_ = csvwriter.Write(row)
 	}
 	csvwriter.Flush()

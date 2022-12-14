@@ -158,7 +158,7 @@ func GetCoCellNumber(currentBoard Board) []int {
 		}
 	}
 	// uninfected cells can be counted by total cells - other cells type
-	cellNumber[0] = len(currentBoard)*len(currentBoard[0]) - cellNumber[1] - cellNumber[2] - cellNumber[3]
+	cellNumber[0] = len(currentBoard)*len(currentBoard[0]) - cellNumber[1] - cellNumber[2] - cellNumber[3] - cellNumber[4] - cellNumber[5]
 
 	return cellNumber
 }
@@ -395,7 +395,7 @@ func UpdateCoTargetCells(currentBoard Board, deltaT int) {
 			cellAround := []OrderedPair{up, down, left, right}
 			// Randomly select a cell near infectious cell using RandomInfectCell
 			// update board
-			currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "infectious1")
+			currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infectious1")
 		}
 	} else if len(listInfectiousCells2) != 0 {
 		for i := 0; i < deltaT; i++ {
@@ -409,7 +409,7 @@ func UpdateCoTargetCells(currentBoard Board, deltaT int) {
 			cellAround := []OrderedPair{up, down, left, right}
 			// Randomly select a cell near infectious cell using RandomInfectCell
 			// update board
-			currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "infectious2")
+			currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infectious2")
 		}
 	}
 }
