@@ -78,11 +78,11 @@ func SimulateCoinfection(initialBoard Board, numGens, numInfectious int, timeSte
 	timePoints := make([]Board, numGens+1)
 	timePoints[0] = initialBoard
 	// Count number of cells (each type) in each generation
-	// order: normal cell, target cell1, infectious cell1, target cell2, infectious cell2, dead cell
+	// order: normal cell, target cell1, infectious cell1, target cell2, infectious cell2, dead cell1, dead cell2
 	cellTimePoints := make([][]int, numGens+1)
 	// i is generation, and j matchs to the order of cell types
 	for i := range cellTimePoints {
-		cellTimePoints[i] = make([]int, 6)
+		cellTimePoints[i] = make([]int, 7)
 	}
 	// the number of uninfectious cells at the beginning
 	cellTimePoints[0][0] = len(initialBoard)*len(initialBoard[0]) - 2*numInfectious
@@ -134,8 +134,8 @@ func UpdateCoBoard(currentBoard Board, timeSteps float64, parameters1, parameter
 // Input: current board (Board)
 // output: number of different cells in the current boards (int, int)
 func GetCoCellNumber(currentBoard Board) []int {
-	// get number of different cells: N, T1, I1, T2, I2, D
-	cellNumber := make([]int, 6)
+	// get number of different cells: N, T1, I1, T2, I2, D1, D2
+	cellNumber := make([]int, 7)
 	// order: normal cell, target cell, infectious cell, dead cell
 	// range through each square, and count each type of cell
 	for i := range currentBoard {
@@ -152,13 +152,16 @@ func GetCoCellNumber(currentBoard Board) []int {
 			if currentBoard[i][j].state == "Infectious2" {
 				cellNumber[4]++
 			}
-			if currentBoard[i][j].state == "Dead" {
+			if currentBoard[i][j].state == "Dead1" {
 				cellNumber[5]++
+			}
+			if currentBoard[i][j].state == "Dead2" {
+				cellNumber[6]++
 			}
 		}
 	}
 	// uninfected cells can be counted by total cells - other cells type
-	cellNumber[0] = len(currentBoard)*len(currentBoard[0]) - cellNumber[1] - cellNumber[2] - cellNumber[3] - cellNumber[4] - cellNumber[5]
+	cellNumber[0] = len(currentBoard)*len(currentBoard[0]) - cellNumber[1] - cellNumber[2] - cellNumber[3] - cellNumber[4] - cellNumber[5] - cellNumber[6]
 
 	return cellNumber
 }
@@ -198,15 +201,15 @@ func UpdateCoInfectiousCells(currentBoard Board, deltaI1, deltaI2 int) {
 	if len(listInfectiousCells1) != 0 {
 		for i := 0; i > deltaI1; i-- {
 			randIndex := rand.Intn(len(listInfectiousCells1))
-			// Change state of cell from infectious to dead
-			currentBoard[listInfectiousCells1[randIndex].x][listInfectiousCells1[randIndex].y].state = "Dead"
+			// Change state of cell from infectious to dead1
+			currentBoard[listInfectiousCells1[randIndex].x][listInfectiousCells1[randIndex].y].state = "Dead1"
 		}
 	}
 	if len(listInfectiousCells2) != 0 {
 		for i := 0; i > deltaI2; i-- {
 			randIndex := rand.Intn(len(listInfectiousCells2))
-			// Change state of cell from infectious to dead
-			currentBoard[listInfectiousCells2[randIndex].x][listInfectiousCells2[randIndex].y].state = "Dead"
+			// Change state of cell from infectious to dead2
+			currentBoard[listInfectiousCells2[randIndex].x][listInfectiousCells2[randIndex].y].state = "Dead2"
 		}
 	}
 }

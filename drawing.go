@@ -43,7 +43,7 @@ func DrawToImage(currentBoard Board, width int) image.Image {
 			case currentBoard[i][j].state == "Infected":
 				img.Set(i, j, color.RGBA{215, 222, 33, 0xff})
 			// dead = black
-			case currentBoard[i][j].state == "Dead":
+			case currentBoard[i][j].state == "Dead" || currentBoard[i][j].state == "Dead1" || currentBoard[i][j].state == "Dead2":
 				img.Set(i, j, color.RGBA{0, 0, 0, 0xff})
 			// uninfected = white
 			case currentBoard[i][j].state == "Uninfected":
@@ -108,7 +108,8 @@ func SaveCoCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename str
 	// initiate writer
 	csvwriter := csv.NewWriter(csvFile)
 	// write header to csv file
-	header := []string{"Time (day)", "Number of normal cells", "Number of target cells1", "Number of infectious cells1", "Number of target cells2", "Number of infectious cells2", "Number of dead cells"}
+	header := []string{"Time (day)", "Number of normal cells", "Number of target cells1", "Number of infectious cells1", "Number of target cells2",
+		"Number of infectious cells2", "Number of dead cells caused by virus 1", "Number of dead cells caused by virus 2"}
 	_ = csvwriter.Write(header)
 	// write data
 	for i := range cellTimePoints {
@@ -118,8 +119,9 @@ func SaveCoCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename str
 		I1 := fmt.Sprintf("%d", cellTimePoints[i][2])
 		T2 := fmt.Sprintf("%d", cellTimePoints[i][3])
 		I2 := fmt.Sprintf("%d", cellTimePoints[i][4])
-		D := fmt.Sprintf("%d", cellTimePoints[i][5])
-		row := []string{time, N, T1, I1, T2, I2, D}
+		D1 := fmt.Sprintf("%d", cellTimePoints[i][5])
+		D2 := fmt.Sprintf("%d", cellTimePoints[i][6])
+		row := []string{time, N, T1, I1, T2, I2, D1, D2}
 		_ = csvwriter.Write(row)
 	}
 	csvwriter.Flush()

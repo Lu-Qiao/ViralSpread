@@ -21,14 +21,14 @@ func TestInitializeTissue(t *testing.T) {
 	} else {
 		fmt.Println("Test InitializeTissue: number of row of board is correct!")
 	}
-	
+
 	// Check number of col
 	var countErrorCol int
 	for i := 0; i < len(t1.board); i++ {
 		if len(t1.board[i]) != t1.width {
 			t.Errorf("Expect %d col of board in row %d, got %d", t1.width, i, len(t1.board))
-			countErrorCol ++
-		} 
+			countErrorCol++
+		}
 	}
 
 	if countErrorCol == 0 {
@@ -41,7 +41,7 @@ func TestInitializeTissue(t *testing.T) {
 		for j := 0; j < len(t1.board[i]); j++ {
 			if t1.board[i][j].state != "Uninfected" {
 				t.Errorf("Expect cell at %d, %d of board is uninfected, but got %s", i, j, t1.board[i][j].state)
-				countErrorCell ++
+				countErrorCell++
 			}
 		}
 	}
@@ -54,10 +54,10 @@ func TestInitializeTissue(t *testing.T) {
 
 func TestAssignStart(t *testing.T) {
 	type Test struct {
-		board Board
-		width int
-		position OrderedPair
-		answer int
+		board          Board
+		width          int
+		position       OrderedPair
+		answer         int
 		answerPosition []OrderedPair
 	}
 
@@ -93,7 +93,7 @@ func TestAssignStart(t *testing.T) {
 	for i := 0; i < len(t1.answerPosition); i++ {
 		if t1.answerPosition[i].x != t1.position.x+i || t1.answerPosition[i].y != t1.position.y {
 			t.Errorf("Expect cell at %d, %d be infectious, but got %d, %d", t1.position.x+i, t1.position.y, t1.answerPosition[i].x, t1.answerPosition[i].y)
-			countErrorPosition ++
+			countErrorPosition++
 		}
 	}
 
@@ -104,10 +104,10 @@ func TestAssignStart(t *testing.T) {
 
 func TestRanomStart(t *testing.T) {
 	type Test struct {
-		board Board
-		width int
+		board       Board
+		width       int
 		numPosition int
-		answer int
+		answer      int
 	}
 
 	var t1 Test
@@ -123,7 +123,7 @@ func TestRanomStart(t *testing.T) {
 	for i := 0; i < len(t1.board); i++ {
 		for j := 0; j < len(t1.board[i]); j++ {
 			if t1.board[i][j].state == "Infectious" {
-				countInfectiousCell1 ++
+				countInfectiousCell1++
 			}
 		}
 	}
@@ -198,7 +198,7 @@ func TestRandomInfectCell(t *testing.T) {
 	} else {
 		fmt.Println("Test RandomInfectCell: the expected cell is infected!")
 	}
-	
+
 }
 
 func TestUpdateVirusConcentrationBlockVirus(t *testing.T) {
