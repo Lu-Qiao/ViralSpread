@@ -55,8 +55,12 @@ func RandomCoStart(initialTissue Board, numPositions int, conc float64) {
 func AssignCoStart(initialTissue Board, initialPosition OrderedPair, conc float64) {
 	initialTissue[initialPosition.x][initialPosition.y].state = "Infectious1"
 	initialTissue[initialPosition.x][initialPosition.y].concVirus = conc
-	initialTissue[initialPosition.x+1][initialPosition.y].state = "Infectious2"
+	initialTissue[initialPosition.x+1][initialPosition.y].state = "Infectious1"
 	initialTissue[initialPosition.x+1][initialPosition.y].concVirus = conc
+	initialTissue[initialPosition.x][initialPosition.y+10].state = "Infectious2"
+	initialTissue[initialPosition.x][initialPosition.y+10].concVirus = conc
+	initialTissue[initialPosition.x+1][initialPosition.y+10].state = "Infectious2"
+	initialTissue[initialPosition.x+1][initialPosition.y+10].concVirus = conc
 }
 
 // RandomStart

@@ -981,7 +981,6 @@ func CreateWindow3() gwu.Window {
 		allInputs1.initialPosition.y, _ = strconv.Atoi(yPositionTB.Text())
 		allInputs2.initialPosition.x, _ = strconv.Atoi(xPositionTB.Text())
 		allInputs2.initialPosition.y, _ = strconv.Atoi(yPositionTB.Text())
-		allInputs2.initialPosition.y++
 
 		// takes numGens
 		allInputs1.numGens, _ = strconv.Atoi(numGensTB.Text())

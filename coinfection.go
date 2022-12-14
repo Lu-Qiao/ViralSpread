@@ -45,7 +45,7 @@ func Simulate2(allInputs1, allInputs2 Inputs) {
 	// Save data
 	fmt.Println("Ready to plot graph!")
 
-	SaveCellDataToCSV(timeSteps, cellTimePoints, filename)
+	SaveCoCellDataToCSV(timeSteps, cellTimePoints, filename)
 	// PlotCellData(timeSteps, cellTimePoints)
 
 	fmt.Println("Graph drawn!")
@@ -59,7 +59,7 @@ func Simulate2(allInputs1, allInputs2 Inputs) {
 
 	fmt.Println("Making GIF...")
 	// To Gif
-	gifhelper.ImagesToGIF(images, filename)
+	gifhelper.ImagesToGIF(images, filename+"_coninfection")
 
 	fmt.Println("Animated GIF produced!")
 
@@ -78,16 +78,17 @@ func SimulateCoinfection(initialBoard Board, numGens, numInfectious int, timeSte
 	timePoints := make([]Board, numGens+1)
 	timePoints[0] = initialBoard
 	// Count number of cells (each type) in each generation
-	// order: normal cell, target cell, infectious cell, dead cell
+	// order: normal cell, target cell1, infectious cell1, target cell2, infectious cell2, dead cell
 	cellTimePoints := make([][]int, numGens+1)
 	// i is generation, and j matchs to the order of cell types
 	for i := range cellTimePoints {
-		cellTimePoints[i] = make([]int, 4)
+		cellTimePoints[i] = make([]int, 6)
 	}
 	// the number of uninfectious cells at the beginning
-	cellTimePoints[0][0] = len(initialBoard)*len(initialBoard[0]) - numInfectious
+	cellTimePoints[0][0] = len(initialBoard)*len(initialBoard[0]) - 2*numInfectious
 	// the number of infectious cells at the beginning
 	cellTimePoints[0][2] = numInfectious
+	cellTimePoints[0][4] = numInfectious
 
 	// now range over the number of generations and update the Board each time
 	for i := 1; i <= numGens; i++ {
@@ -105,12 +106,12 @@ func SimulateCoinfection(initialBoard Board, numGens, numInfectious int, timeSte
 func UpdateCoBoard(currentBoard Board, timeSteps float64, parameters1, parameters2 Parameters) (Board, []int) {
 	// Copy Board and store it in newBoard
 	newBoard := CopyBoard(currentBoard)
-	// get number of different cells: N, T, I, D
-	cellNumber := GetCellNumber(currentBoard)
+	// get number of different cells: N, T1, I1, T2, I2, D
+	cellNumber := GetCoCellNumber(currentBoard)
 	// Calculate deltaT and deltaI
-	deltaT := CalculateCoDeltaT(cellNumber[1], cellNumber[2], timeSteps, parameters1, parameters2)
-	deltaI1 := CalculateDeltaI(cellNumber[1], cellNumber[2], timeSteps, parameters1)
-	deltaI2 := CalculateDeltaI(cellNumber[1], cellNumber[2], timeSteps, parameters2)
+	deltaT := CalculateCoDeltaT(cellNumber[1]+cellNumber[3], cellNumber[2]+cellNumber[4], timeSteps, parameters1, parameters2)
+	deltaI1 := CalculateDeltaI(cellNumber[1]+cellNumber[3], cellNumber[2], timeSteps, parameters1)
+	deltaI2 := CalculateDeltaI(cellNumber[1]+cellNumber[3], cellNumber[4], timeSteps, parameters2)
 	// Update the states of infectious cells and target cells
 	UpdateCoState(newBoard, deltaT, deltaI1, deltaI2)
 	// range through each square of the board
@@ -127,6 +128,39 @@ func UpdateCoBoard(currentBoard Board, timeSteps float64, parameters1, parameter
 		}
 	}
 	return newBoard, cellNumber
+}
+
+// GetCoCellNumber
+// Input: current board (Board)
+// output: number of different cells in the current boards (int, int)
+func GetCoCellNumber(currentBoard Board) []int {
+	// get number of different cells: N, T1, I1, T2, I2, D
+	cellNumber := make([]int, 6)
+	// order: normal cell, target cell, infectious cell, dead cell
+	// range through each square, and count each type of cell
+	for i := range currentBoard {
+		for j := range currentBoard[i] {
+			if currentBoard[i][j].state == "Infected1" {
+				cellNumber[1]++
+			}
+			if currentBoard[i][j].state == "Infectious1" {
+				cellNumber[2]++
+			}
+			if currentBoard[i][j].state == "Infected2" {
+				cellNumber[3]++
+			}
+			if currentBoard[i][j].state == "Infectious2" {
+				cellNumber[4]++
+			}
+			if currentBoard[i][j].state == "Dead" {
+				cellNumber[5]++
+			}
+		}
+	}
+	// uninfected cells can be counted by total cells - other cells type
+	cellNumber[0] = len(currentBoard)*len(currentBoard[0]) - cellNumber[1] - cellNumber[2] - cellNumber[3]
+
+	return cellNumber
 }
 
 // CalculateDeltaT is to calculate deltaT for untreated cell to cell model
@@ -227,7 +261,7 @@ func UpdateCoCell(i, j int, currentBoard Board, timeSteps float64, parameters Pa
 	if currentBoard[i][j].concVirus >= parameters.threshold {
 		if state == 1 {
 			currentBoard[i][j].state = "Infectious1"
-		} else {
+		} else if state == 2 {
 			currentBoard[i][j].state = "Infectious2"
 		}
 	}
@@ -334,7 +368,7 @@ func UpdateCoTargetCells(currentBoard Board, deltaT int) {
 				cellAround := []OrderedPair{up, down, left, right}
 				// Randomly select a cell near infectious cell using RandomInfectCell
 				// update board
-				currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "infectious1")
+				currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infectious1")
 			} else {
 				var infectiousCell, up, down, left, right OrderedPair
 				// Randomly select one infectious cell
@@ -346,7 +380,7 @@ func UpdateCoTargetCells(currentBoard Board, deltaT int) {
 				cellAround := []OrderedPair{up, down, left, right}
 				// Randomly select a cell near infectious cell using RandomInfectCell
 				// update board
-				currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "infectious2")
+				currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infectious2")
 			}
 		}
 	} else if len(listInfectiousCells1) != 0 {
