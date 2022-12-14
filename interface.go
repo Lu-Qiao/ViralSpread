@@ -799,7 +799,7 @@ func CreateWindow3() gwu.Window {
 	paraCellPanel.Add(gwu.NewLabel("/day, "))
 
 	paraCellPanel.Add(gwu.NewLabel("δ: ")) // delta
-	deltaTB := gwu.NewTextBox("0.5")
+	deltaTB := gwu.NewTextBox("0.25")
 	deltaTB.Style().SetWidth("50")
 	deltaTB.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraCellPanel.Add(deltaTB)
@@ -865,7 +865,7 @@ func CreateWindow3() gwu.Window {
 	paraVirusPanel2 := gwu.NewHorizontalPanel()
 
 	paraVirusPanel2.Add(gwu.NewLabel("Threshold 2: ")) // threshold2
-	thresholdTB2 := gwu.NewTextBox("300")
+	thresholdTB2 := gwu.NewTextBox("500")
 	thresholdTB2.Style().SetWidth("50")
 	thresholdTB2.AddSyncOnETypes(gwu.ETypeKeyUp)
 	paraVirusPanel2.Add(thresholdTB2)
