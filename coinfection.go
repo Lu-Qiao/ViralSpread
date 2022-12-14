@@ -371,7 +371,7 @@ func UpdateCoTargetCells(currentBoard Board, deltaT int) {
 				cellAround := []OrderedPair{up, down, left, right}
 				// Randomly select a cell near infectious cell using RandomInfectCell
 				// update board
-				currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infectious1")
+				currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infected1")
 			} else {
 				var infectiousCell, up, down, left, right OrderedPair
 				// Randomly select one infectious cell
@@ -383,7 +383,7 @@ func UpdateCoTargetCells(currentBoard Board, deltaT int) {
 				cellAround := []OrderedPair{up, down, left, right}
 				// Randomly select a cell near infectious cell using RandomInfectCell
 				// update board
-				currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infectious2")
+				currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infected2")
 			}
 		}
 	} else if len(listInfectiousCells1) != 0 {
@@ -398,7 +398,7 @@ func UpdateCoTargetCells(currentBoard Board, deltaT int) {
 			cellAround := []OrderedPair{up, down, left, right}
 			// Randomly select a cell near infectious cell using RandomInfectCell
 			// update board
-			currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infectious1")
+			currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infected1")
 		}
 	} else if len(listInfectiousCells2) != 0 {
 		for i := 0; i < deltaT; i++ {
@@ -412,7 +412,7 @@ func UpdateCoTargetCells(currentBoard Board, deltaT int) {
 			cellAround := []OrderedPair{up, down, left, right}
 			// Randomly select a cell near infectious cell using RandomInfectCell
 			// update board
-			currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infectious2")
+			currentBoard = RandomCoInfectCell(currentBoard, infectiousCell, cellAround, "Infected2")
 		}
 	}
 }
