@@ -10,17 +10,17 @@ import (
 
 // Simulate is the highest level function
 // Input: an Inputs object that contains all input parameters
-func Simulate2(allInputs Inputs) {
+func Simulate2(allInputs1, allInputs2 Inputs) {
 	// Copy all parameters from inputs
-	width := allInputs.width
-	mode := allInputs.mode
-	numInfectious := allInputs.numInfectious
-	initialPosition := allInputs.initialPosition
-	numGens := allInputs.numGens
-	timeSteps := allInputs.timeSteps
-	imageFrequency := allInputs.imageFrequency
-	parameters1 := allInputs.parameters
-	parameters2 := allInputs.parameters
+	width := allInputs1.width
+	mode := allInputs1.mode
+	numInfectious := allInputs1.numInfectious
+	initialPosition := allInputs1.initialPosition
+	numGens := allInputs1.numGens
+	timeSteps := allInputs1.timeSteps
+	imageFrequency := allInputs1.imageFrequency
+	parameters1 := allInputs1.parameters
+	parameters2 := allInputs2.parameters
 
 	// Initialize tissue
 	Tissue := InitializeTissue(width)
