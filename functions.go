@@ -428,6 +428,7 @@ func UpdateTargetCells(currentBoard Board, deltaT int) {
 	if len(listInfectiousCells) != 0 {
 		for i := 0; i < deltaT; i++ {
 			var infectiousCell, up, down, left, right OrderedPair
+			rand.Seed(time.Now().UnixNano())
 			// Randomly select one infectious cell
 			randIndex := rand.Intn(len(listInfectiousCells))
 			infectiousCell = listInfectiousCells[randIndex]
