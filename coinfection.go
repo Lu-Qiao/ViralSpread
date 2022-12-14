@@ -27,10 +27,10 @@ func Simulate2(allInputs1, allInputs2 Inputs) {
 	// If mode equal random
 	if mode == "random" {
 		// then call RandomStart to random start the infection
-		RandomStart(Tissue, numInfectious, parameters1.threshold)
+		RandomCoStart(Tissue, numInfectious, parameters1.threshold)
 	} else if mode == "assign" {
 		// Assign specific position for infection
-		AssignStart(Tissue, initialPosition, parameters1.threshold)
+		AssignCoStart(Tissue, initialPosition, parameters1.threshold)
 	}
 	// Simulations
 	fmt.Println("Simulating system.")
