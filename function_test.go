@@ -6,11 +6,10 @@ import (
 )
 
 func TestRandomInfectCell(t *testing.T) {
-	
 	type Test struct {
-		board Board
+		board          Board
 		startInfection OrderedPair
-		answer int
+		answer         int
 	}
 
 	//// Test if function choose one cell to be infected
@@ -18,7 +17,7 @@ func TestRandomInfectCell(t *testing.T) {
 	var above, below, right, left OrderedPair
 	var count1 int
 
-	t1.startInfection.x, t1.startInfection.y = 3,3
+	t1.startInfection.x, t1.startInfection.y = 3, 3
 	above.x, below.x, right.x, left.x = 2, 4, 3, 3
 	above.y, below.y, right.y, left.y = 3, 3, 4, 2
 	t1.answer = 1
@@ -43,17 +42,17 @@ func TestRandomInfectCell(t *testing.T) {
 	var t2 Test
 	var above2, below2, right2, left2 OrderedPair
 	var count2 int
-	
+
 	t2.answer = 0
-	t2.startInfection.x, t1.startInfection.y = 3,3
+	t2.startInfection.x, t1.startInfection.y = 3, 3
 	above2.x, below2.x, right2.x, left2.x = 2, 4, 3, 3
 	above2.y, below2.y, right2.y, left2.y = 3, 3, 4, 2
 	cellAround := []OrderedPair{above2, below2, right2, left2}
-	
+
 	t2.board = InitializeTissue(5)
-	t2.board[2][3].state, t2.board[4][3].state,t2.board[3][4].state = "Infected", "Infected", "Infected"
+	t2.board[2][3].state, t2.board[4][3].state, t2.board[3][4].state = "Infected", "Infected", "Infected"
 	t2.board = RandomInfectCell(t2.board, t2.startInfection, cellAround)
-	
+
 	for i := 0; i < len(cellAround); i++ {
 		if t2.board[cellAround[i].x][cellAround[i].y].state == "Uninfected" {
 			count2++
@@ -67,4 +66,100 @@ func TestRandomInfectCell(t *testing.T) {
 
 }
 
+func TestUpdateVirusConcentrationBlockVirus(t *testing.T) {
+	type Test struct {
+		board          Board
+		startInfection OrderedPair
+		parameters     Parameters
+		answer         float64
+	}
+	// Test if the output of calculation is correct
+	var t1 Test
 
+	t1.startInfection.x, t1.startInfection.y = 2, 2
+	t1.parameters.epsilonVirus = 2.0
+	t1.parameters.alpha = 3.0
+	t1.parameters.rCap = 4.0
+	t1.parameters.gamma = 1.0
+	t1.parameters.rho = 5.0
+	t1.answer = -8.25
+
+	t1.board = InitializeTissue(5)
+	AssignStart(t1.board, t1.startInfection, 1)
+	outPut := UpdateVirusConcentrationBlockVirus(2, 2, t1.board, 1, t1.parameters)
+
+	if t1.answer != outPut {
+		t.Errorf("Expected virus concentration is %f, got %f", t1.answer, outPut)
+	} else {
+		fmt.Println("Test UpdateVirusConcentrationBlockVirus: virus concentration is updated correctly!")
+	}
+
+}
+
+func TestUpdateVirusConcentrationNoTreatment(t *testing.T) {
+	type Test struct {
+		board          Board
+		startInfection OrderedPair
+		parameters     Parameters
+		answer         float64
+	}
+	// Test if the output of calculation is correct
+	var t1 Test
+
+	t1.startInfection.x, t1.startInfection.y = 2, 2
+	t1.parameters.alpha = 3.0
+	t1.parameters.rCap = 4.0
+	t1.parameters.gamma = 1.0
+	t1.parameters.rho = 5.0
+	t1.answer = -3.750
+
+	t1.board = InitializeTissue(5)
+	AssignStart(t1.board, t1.startInfection, 1)
+	outPut := UpdateVirusConcentrationBlockVirus(2, 2, t1.board, 1, t1.parameters)
+
+	if t1.answer != outPut {
+		t.Errorf("Expected virus concentration is %f, got %f", t1.answer, outPut)
+	} else {
+		fmt.Println("Test UpdateVirusConcentrationNoTreatment: virus concentration is updated correctly!")
+	}
+
+}
+
+func TestFindInfectiousCells(t *testing.T) {
+	type Test struct {
+		board          Board
+		startInfection OrderedPair
+		parameters     Parameters
+		answer         int
+	}
+	var t1 Test
+
+	t1.answer = 0
+	t1.board = InitializeTissue(5)
+	outPut1 := FindInfectiousCells(t1.board)
+
+	if t1.answer != len(outPut1) {
+		t.Errorf("Expected number of infectious cells is %d, got %d", t1.answer, len(outPut1))
+	} else {
+		fmt.Println("Test FindInfectiousCells: none of cells is infectious!")
+	}
+
+	var t2 Test
+	t2.answer = 9
+	t2.board = InitializeTissue(3)
+
+	for i := 0; i < len(t2.board); i++ {
+		for j := 0; j < len(t2.board[0]); j++ {
+			t2.board[i][j].state = "Infectious"
+		}
+	}
+
+	outPut2 := FindInfectiousCells(t2.board)
+
+	if t2.answer != len(outPut2) {
+		t.Errorf("Expected number of infectious cells is %d, got %d", t2.answer, len(outPut2))
+	} else {
+		fmt.Println("Test FindInfectiousCells: all cells are infectious!")
+	}
+
+}
