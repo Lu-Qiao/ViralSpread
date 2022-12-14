@@ -959,78 +959,103 @@ func CreateWindow3() gwu.Window {
 	btns.SetCellPadding(10)
 	win.Add(btns)
 	// get inputs and start simulation
-	var allInputs Inputs
+	var allInputs1 Inputs
+	var allInputs2 Inputs
 	btn.AddEHandlerFunc(func(e gwu.Event) {
 		// once click button, pass all inputs and start simulation!
 
 		// takes width
-		allInputs.width, _ = strconv.Atoi(widthTB.Text())
+		allInputs1.width, _ = strconv.Atoi(widthTB.Text())
+		allInputs2.width, _ = strconv.Atoi(widthTB.Text())
 
 		// takes mode
-		allInputs.mode = modeGroup.Selected().Text()
+		allInputs1.mode = modeGroup.Selected().Text()
+		allInputs2.mode = modeGroup.Selected().Text()
 
 		// takes numInfectious
-		allInputs.numInfectious, _ = strconv.Atoi(numInfectiousTB.Text())
+		allInputs1.numInfectious, _ = strconv.Atoi(numInfectiousTB.Text())
+		allInputs2.numInfectious, _ = strconv.Atoi(numInfectiousTB.Text())
 
 		// take initialPosition
-		allInputs.initialPosition.x, _ = strconv.Atoi(xPositionTB.Text())
-		allInputs.initialPosition.y, _ = strconv.Atoi(yPositionTB.Text())
+		allInputs1.initialPosition.x, _ = strconv.Atoi(xPositionTB.Text())
+		allInputs1.initialPosition.y, _ = strconv.Atoi(yPositionTB.Text())
+		allInputs2.initialPosition.x, _ = strconv.Atoi(xPositionTB.Text())
+		allInputs2.initialPosition.y, _ = strconv.Atoi(yPositionTB.Text())
+		allInputs2.initialPosition.y++
 
 		// takes numGens
-		allInputs.numGens, _ = strconv.Atoi(numGensTB.Text())
+		allInputs1.numGens, _ = strconv.Atoi(numGensTB.Text())
+		allInputs2.numGens, _ = strconv.Atoi(numGensTB.Text())
 
 		// takes timeSteps
-		allInputs.timeSteps, _ = strconv.ParseFloat(timeStepsTB.Text(), 64)
+		allInputs1.timeSteps, _ = strconv.ParseFloat(timeStepsTB.Text(), 64)
+		allInputs2.timeSteps, _ = strconv.ParseFloat(timeStepsTB.Text(), 64)
 
 		// takes lambda
-		allInputs.parameters.lambda, _ = strconv.ParseFloat(lambdaTB.Text(), 64)
+		allInputs1.parameters.lambda, _ = strconv.ParseFloat(lambdaTB.Text(), 64)
+		allInputs2.parameters.lambda, _ = strconv.ParseFloat(lambdaTB.Text(), 64)
 
 		// takes omega
-		allInputs.parameters.omega, _ = strconv.ParseFloat(omegaTB.Text(), 64)
+		allInputs1.parameters.omega, _ = strconv.ParseFloat(omegaTB.Text(), 64)
+		allInputs2.parameters.omega, _ = strconv.ParseFloat(omegaTB.Text(), 64)
 
 		// takes dT
-		allInputs.parameters.dT, _ = strconv.ParseFloat(dTTB.Text(), 64)
+		allInputs1.parameters.dT, _ = strconv.ParseFloat(dTTB.Text(), 64)
+		allInputs2.parameters.dT, _ = strconv.ParseFloat(dTTB.Text(), 64)
 
 		// takes delta
-		allInputs.parameters.delta, _ = strconv.ParseFloat(deltaTB.Text(), 64)
+		allInputs1.parameters.delta, _ = strconv.ParseFloat(deltaTB.Text(), 64)
+		allInputs2.parameters.delta, _ = strconv.ParseFloat(deltaTB.Text(), 64)
 
 		// takes threshold
-		allInputs.parameters.threshold, _ = strconv.ParseFloat(thresholdTB1.Text(), 64)
+		allInputs1.parameters.threshold, _ = strconv.ParseFloat(thresholdTB1.Text(), 64)
+		allInputs2.parameters.threshold, _ = strconv.ParseFloat(thresholdTB2.Text(), 64)
 
 		// takes rCap
-		allInputs.parameters.rCap, _ = strconv.ParseFloat(rCapTB1.Text(), 64)
+		allInputs1.parameters.rCap, _ = strconv.ParseFloat(rCapTB1.Text(), 64)
+		allInputs2.parameters.rCap, _ = strconv.ParseFloat(rCapTB2.Text(), 64)
 
 		// takes alpha
-		allInputs.parameters.alpha, _ = strconv.ParseFloat(alphaTB1.Text(), 64)
+		allInputs1.parameters.alpha, _ = strconv.ParseFloat(alphaTB1.Text(), 64)
+		allInputs2.parameters.alpha, _ = strconv.ParseFloat(alphaTB2.Text(), 64)
 
 		// takes gamma
-		allInputs.parameters.gamma, _ = strconv.ParseFloat(gammaTB1.Text(), 64)
+		allInputs1.parameters.gamma, _ = strconv.ParseFloat(gammaTB1.Text(), 64)
+		allInputs2.parameters.gamma, _ = strconv.ParseFloat(gammaTB2.Text(), 64)
 
 		// takes rho
-		allInputs.parameters.rho, _ = strconv.ParseFloat(rhoTB1.Text(), 64)
+		allInputs1.parameters.rho, _ = strconv.ParseFloat(rhoTB1.Text(), 64)
+		allInputs2.parameters.rho, _ = strconv.ParseFloat(rhoTB2.Text(), 64)
 
 		// takes treatment
 		if blockCellCB.State() && blockVirusCB.State() {
-			allInputs.parameters.treatment = "blockboth"
+			allInputs1.parameters.treatment = "blockboth"
+			allInputs2.parameters.treatment = "blockboth"
 		} else if blockCellCB.State() && !blockVirusCB.State() {
-			allInputs.parameters.treatment = "blockcell"
+			allInputs1.parameters.treatment = "blockcell"
+			allInputs2.parameters.treatment = "blockcell"
 		} else if !blockCellCB.State() && blockVirusCB.State() {
-			allInputs.parameters.treatment = "blockvirus"
+			allInputs1.parameters.treatment = "blockvirus"
+			allInputs2.parameters.treatment = "blockvirus"
 		} else {
-			allInputs.parameters.treatment = "no"
+			allInputs1.parameters.treatment = "no"
+			allInputs2.parameters.treatment = "no"
 		}
 
 		// takes epsilonCell
-		allInputs.parameters.epsilonCell, _ = strconv.ParseFloat(epsilonCellTB.Text(), 64)
+		allInputs1.parameters.epsilonCell, _ = strconv.ParseFloat(epsilonCellTB.Text(), 64)
+		allInputs2.parameters.epsilonCell, _ = strconv.ParseFloat(epsilonCellTB.Text(), 64)
 
 		// takes epsilonVirus
-		allInputs.parameters.epsilonVirus, _ = strconv.ParseFloat(epsilonVirusTB.Text(), 64)
+		allInputs1.parameters.epsilonVirus, _ = strconv.ParseFloat(epsilonVirusTB.Text(), 64)
+		allInputs2.parameters.epsilonVirus, _ = strconv.ParseFloat(epsilonVirusTB.Text(), 64)
 
 		// takes imageFrequency
-		allInputs.imageFrequency, _ = strconv.Atoi(imageFrequencyTB.Text())
+		allInputs1.imageFrequency, _ = strconv.Atoi(imageFrequencyTB.Text())
+		allInputs2.imageFrequency, _ = strconv.Atoi(imageFrequencyTB.Text())
 
 		// simulate GIF
-		Simulate(allInputs)
+		Simulate2(allInputs1, allInputs2)
 	}, gwu.ETypeClick)
 
 	terminate.AddEHandlerFunc(func(e gwu.Event) {
