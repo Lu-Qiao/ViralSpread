@@ -8,9 +8,9 @@ import (
 	"time"
 )
 
-// Simulate is the highest level function
+// SimulateCo is the highest level function for simulate coinfection
 // Input: an Inputs object that contains all input parameters
-func Simulate2(allInputs1, allInputs2 Inputs) {
+func SimulateCo(allInputs1, allInputs2 Inputs) {
 	// Copy all parameters from inputs
 	width := allInputs1.width
 	mode := allInputs1.mode
@@ -68,11 +68,9 @@ func Simulate2(allInputs1, allInputs2 Inputs) {
 	fmt.Printf("Waiting for next simulation...\n\n")
 }
 
-// SimulateViralSpread simulates the viral spread system over numGens generations
+// SimulateCoinfection simulates the viral spread system with two viruses over numGens generations
 // starting with initialBoard using a time step of timeStep seconds.
-// Input: a Board object initialBoard, a int of generations parameter numGens, a
-// float64 time interval timeStep,parameters for cell and virus, and initial
-// number of target cells and infectious cells
+// Input: a Board object initialBoard, a int of generations parameter numGens, a float64 time interval timeStep,parameters for cell and virus, and initial number of target cells and infectious cells
 // Output: a slice of numGens + 1 total Board objects.
 func SimulateCoinfection(initialBoard Board, numGens, numInfectious int, timeSteps float64, parameters1, parameters2 Parameters) ([]Board, [][]int) {
 	timePoints := make([]Board, numGens+1)
@@ -98,7 +96,7 @@ func SimulateCoinfection(initialBoard Board, numGens, numInfectious int, timeSte
 	return timePoints, cellTimePoints
 }
 
-// UpdateBoard updates current board with new deltaT and new daltaI
+// UpdateCoBoard updates current board with new deltaT and new daltaI
 // Input: a board object currentBoard, a float64 for timeSteps, a parameters
 // including different necessary parameters for cells and virus, two int for T
 // and I which are target cells and infected cells
@@ -130,7 +128,7 @@ func UpdateCoBoard(currentBoard Board, timeSteps float64, parameters1, parameter
 	return newBoard, cellNumber
 }
 
-// GetCoCellNumber
+// GetCoCellNumber counts the cells in the currentBoard
 // Input: current board (Board)
 // output: number of different cells in the current boards (int, int)
 func GetCoCellNumber(currentBoard Board) []int {
@@ -166,7 +164,7 @@ func GetCoCellNumber(currentBoard Board) []int {
 	return cellNumber
 }
 
-// CalculateDeltaT is to calculate deltaT for untreated cell to cell model
+// CalculateCoDeltaT is to calculate deltaT for untreated cell to cell model
 // Input: two int for target cells and infected cells, float64 for timeSteps and a
 // parameters object including several parameters that will be used in the calculation
 // Output: a int object for deltaT
@@ -179,7 +177,7 @@ func CalculateCoDeltaT(T, I int, timeSteps float64, parameters1, parameters2 Par
 	return int(deltaT)
 }
 
-// UpdateState updates the state of infection cells and target cells
+// UpdateCoState updates the state of infection cells and target cells
 // Input: a board object for currentBoard, two int objects for deltaT and deltaI
 // which are generated from CalculateDeltaI and CalculateDeltaT
 func UpdateCoState(currentBoard Board, deltaT, deltaI1, deltaI2 int) {
@@ -189,8 +187,7 @@ func UpdateCoState(currentBoard Board, deltaT, deltaI1, deltaI2 int) {
 	UpdateCoTargetCells(currentBoard, deltaT)
 }
 
-// UpdateInfectiousCells collects all the infectious cells and then randomly selects
-// the number of absolute deltaI
+// UpdateCoInfectiousCells collects all the infectious cells and then randomly selects the number of absolute deltaI
 // Input: a board object for current board, a int for deltaI which is calculated
 // from CalculateDeltaI
 func UpdateCoInfectiousCells(currentBoard Board, deltaI1, deltaI2 int) {
@@ -214,7 +211,7 @@ func UpdateCoInfectiousCells(currentBoard Board, deltaI1, deltaI2 int) {
 	}
 }
 
-// CountInfectiousCells store the index of infectious cells on the currentBoard
+// FindCoInfectiousCells store the index of two types of infectious cells on the currentBoard
 // Input: a board object for current board
 // Output: a slice of OrderedPair
 func FindCoInfectiousCells(currentBoard Board) ([]OrderedPair, []OrderedPair) {
@@ -246,7 +243,7 @@ func FindCoInfectiousCells(currentBoard Board) ([]OrderedPair, []OrderedPair) {
 	return listInfectiousCells1, listInfectiousCells2
 }
 
-// UpdateCell updates the state and virusconcentation of the current cells based on the treatment
+// UpdateCoCell updates the state and virusconcentation of the current cells based on the treatment
 // Input: intergers for index, a board object for current board, timeStep as float64, parameters
 func UpdateCoCell(i, j int, currentBoard Board, timeSteps float64, parameters Parameters, state int) {
 	deltaR := 0.0
@@ -270,9 +267,8 @@ func UpdateCoCell(i, j int, currentBoard Board, timeSteps float64, parameters Pa
 	}
 }
 
-// RandomInfectCell is to randomly select a cell around infectious cell to be infected
-// Input: a board object of currentBoard, a OrderedPair object of the position of infectious cell,
-// and a list object of the positions of the cells that are around infectious cells
+// RandomCoInfectCell is to randomly select a cell around infectious cell to be infected
+// Input: a board object of currentBoard, a OrderedPair object of the position of infectious cell, and a list object of the positions of the cells that are around infectious cells
 // Output: a board object that updates the cell which is infected by infectious cell
 func RandomCoInfectCell(currentBoard Board, infectCell OrderedPair, cellAround []OrderedPair, state string) Board {
 	// Set seed
@@ -325,6 +321,8 @@ func RandomCoInfectCell(currentBoard Board, infectCell OrderedPair, cellAround [
 	return currentBoard
 }
 
+// UpdateCoTargetCells update the state of target cells
+// Two viruses will take random turns to infect surrrounding cells.
 // To update target cell, infect cells which are near infectious cells
 // Input: a borad object for current board, int for deltaT
 func UpdateCoTargetCells(currentBoard Board, deltaT int) {
