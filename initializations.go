@@ -5,14 +5,15 @@ import (
 	"time"
 )
 
-// InitializeTissue
-// Input
-// Output
+// InitializeTissue: Create a new board with uninfected cells
+// Input: width of board
+// Output: Board
 func InitializeTissue(width int) Board {
 	initialTissue := make([][]Cell, width)
 	for r := range initialTissue {
 		initialTissue[r] = make([]Cell, width)
 	}
+	// Set all the cells in the board as uninfected cells
 	for row := range initialTissue {
 		for col := range initialTissue[0] {
 			initialTissue[row][col].state = "Uninfected"
@@ -21,8 +22,8 @@ func InitializeTissue(width int) Board {
 	return initialTissue
 }
 
-// AssignStart
-// input
+// AssignStart: Set start position of infection based on user's input
+// Input: Board, position, conc of virus
 func AssignStart(initialTissue Board, initialPosition OrderedPair, conc float64) {
 	initialTissue[initialPosition.x][initialPosition.y].state = "Infectious"
 	initialTissue[initialPosition.x][initialPosition.y].concVirus = conc
@@ -30,9 +31,8 @@ func AssignStart(initialTissue Board, initialPosition OrderedPair, conc float64)
 	initialTissue[initialPosition.x+1][initialPosition.y].concVirus = conc
 }
 
-// RandomStart
-// Input
-// Output
+// RandomCoStart: Infection start at random position for coinfection
+// Input: Board, number of positions, conc of virus
 func RandomCoStart(initialTissue Board, numPositions int, conc float64) {
 	for i := 0; i < numPositions; i++ {
 		time.Sleep(time.Millisecond)
@@ -52,6 +52,8 @@ func RandomCoStart(initialTissue Board, numPositions int, conc float64) {
 	}
 }
 
+// AssignCoStart: Set start position of infection based on user's input for coinfection
+// input: Board, position, conc of virus
 func AssignCoStart(initialTissue Board, initialPosition OrderedPair, conc float64) {
 	initialTissue[initialPosition.x][initialPosition.y-5].state = "Infectious1"
 	initialTissue[initialPosition.x][initialPosition.y-5].concVirus = conc
@@ -63,9 +65,8 @@ func AssignCoStart(initialTissue Board, initialPosition OrderedPair, conc float6
 	initialTissue[initialPosition.x+1][initialPosition.y+5].concVirus = conc
 }
 
-// RandomStart
-// Input
-// Output
+// RandomStart: Infection start at random position
+// Input: Board, number of positions, conc of virus
 func RandomStart(initialTissue Board, numPositions int, conc float64) {
 	for i := 0; i < numPositions; i++ {
 		time.Sleep(time.Millisecond)
