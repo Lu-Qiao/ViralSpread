@@ -523,3 +523,67 @@ func TestFindInfectiousCells(t *testing.T) {
 	}
 
 }
+
+func TestGetCoCellNumber(t *testing.T) {
+	type Test struct {
+		board  Board
+		answer []int
+	}
+
+	// Coinfection jas six states of cells, so make sure function could correctly count each type
+	// Test if function can correctly calculate number of each type of cells
+	var t1 Test
+	var countError1 int
+	t1.board = InitializeTissue(5)
+	t1.answer = []int{25, 0, 0, 0, 0, 0, 0}
+	name := []string{"Uninfected", "Infected1", "Infectious1", "Infected2", "Infectious2", "Dead1", "Dead2"}
+	outPut1 := GetCoCellNumber(t1.board)
+
+	for i := 0; i < len(outPut1); i++ {
+		if t1.answer[i] != outPut1[i] {
+			t.Errorf("Expect %d of %s cell, got %d", t1.answer[i], name[i], outPut1[i])
+			countError1++
+		}
+	}
+	
+	if countError1 == 0 {
+		fmt.Println("Test GetCoCellNumber: number of each type of cells is correct!")
+	}
+
+	var t2 Test
+	var countError2 int
+	t2.board = InitializeTissue(5)
+	t2.answer = []int{3, 3, 4, 3, 5, 4, 3}
+
+	for i := 0; i < len(t2.board); i++ {
+		for j := 0; j < len(t2.board[i]); j++ {
+			if (i+j)%7 == 1 {
+				t2.board[i][j].state = "Infected1"
+			} else if (i+j)%7 == 2 {
+				t2.board[i][j].state = "Infected2"
+			} else if (i+j)%7 == 3 {
+				t2.board[i][j].state = "Infectious1"
+			} else if (i+j)%7 == 4 {
+				t2.board[i][j].state = "Infectious2"
+			}  else if (i+j)%7 == 5 {
+				t2.board[i][j].state = "Dead1"
+			}  else if (i+j)%7 == 6 {
+				t2.board[i][j].state = "Dead2"
+			}
+
+		}
+	}
+
+	outPut2 := GetCoCellNumber(t2.board)
+
+	for i := 0; i < len(outPut2); i++ {
+		if t2.answer[i] != outPut2[i] {
+			t.Errorf("Expect %d of %s cell, got %d", t2.answer[i], name[i], outPut2[i])
+			countError2++
+		}
+	}
+
+	if countError2 == 0 {
+		fmt.Println("Test GetCoCellNumber: number of each type of cells is correct!")
+	}
+}
