@@ -1,6 +1,8 @@
 # ViralSpread
 Final project for the course 02-601 Programming for Scientists at CMU.
 
+# Link to demo video: https://drive.google.com/file/d/1TDpHYgrfGso4W-efcdu4ACn3N0jYVgJv/view?usp=sharing
+
 ## Objectives
 1. Simulate viral spread caused by one type of virus with applying different types of antiviral therapies.
 2. Iterative simulation of antiviral therapy effectiveness and find the critical effectiveness that could terminate the viral spread.
