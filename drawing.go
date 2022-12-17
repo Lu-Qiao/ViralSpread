@@ -27,6 +27,7 @@ func AnimateSystem(timePoints []Board, width, imageFrequency int) []image.Image 
 }
 
 // DrawToImage generates the image corresponding to the states of cells in the currentBoard
+// currentBoard (Board) and width of the image
 func DrawToImage(currentBoard Board, width int) image.Image {
 	// create rectangle
 	upLeft := image.Point{0, 0}
@@ -71,7 +72,7 @@ func DrawToImage(currentBoard Board, width int) image.Image {
 }
 
 // SaveCellDataToCSV
-// Inputs:
+// Inputs: timeSteps (float64), cell counts over time, and filename (string)
 func SaveCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename string) {
 	// create csv file
 	csvFile, err := os.Create(filename + ".out.csv")
@@ -98,7 +99,7 @@ func SaveCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename strin
 }
 
 // SaveCoCellDataToCSV
-// Inputs:
+// Inputs: timeSteps (float64), cell counts over time, and filename (string)
 func SaveCoCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename string) {
 	// create csv file
 	csvFile, err := os.Create(filename + "_coinfection.out.csv")
@@ -129,7 +130,7 @@ func SaveCoCellDataToCSV(timeSteps float64, cellTimePoints [][]int, filename str
 }
 
 // SaveEffectivenessDataToCSV()
-// Inputs:
+// Inputs: cell count after 30 days of infection for different drug effectiveness
 func SaveEffectivenessDataToCSV(finalCell [][]int) {
 	// create csv file
 	csvFile, err := os.Create("effectiveness.csv")
